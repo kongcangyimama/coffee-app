@@ -1,0 +1,3390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>我的冲煮</title>
+    <style>
+        /* ===== 根变量 ===== */
+        :root {
+            --bg: #F5F0EB;
+            --card: #FFFFFF;
+            --primary: #6F4E37;
+            --primary-light: #A67B5B;
+            --accent: #D4A574;
+            --accent-bg: #FFF8F0;
+            --text: #3C2A1E;
+            --text-secondary: #8B7355;
+            --text-placeholder: #C4A882;
+            --border: #E8DDD0;
+            --shadow: 0 0.125rem 0.75rem rgba(111, 78, 55, 0.08);
+            --radius: 0.875rem;
+            --font-base: 16px;
+            --max-width: 430px;
+            --danger: #C0392B;
+            --tag-bg: #F0EAE4;
+            --success: #2D7D46;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            font-size: var(--font-base);
+        }
+
+        body {
+            margin-top: 1rem;
+            font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 0 0.5rem;
+            overflow-x: hidden;
+        }
+
+        .app {
+            width: 100%;
+            max-width: var(--max-width);
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 5.5rem;
+        }
+
+        /* ===== 图标通用样式（内联 SVG） ===== */
+        .icon {
+            display: inline-block;
+            width: 1.2em;
+            height: 1.2em;
+            vertical-align: middle;
+            flex-shrink: 0;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .icon-sm {
+            width: 1em;
+            height: 1em;
+        }
+
+        .icon-lg {
+            width: 1.5em;
+            height: 1.5em;
+        }
+
+        .icon-xl {
+            width: 2em;
+            height: 2em;
+        }
+
+        /* ===== 页面容器 ===== */
+        .page {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(0.5rem);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== 导航栏 ===== */
+        .nav-bar {
+            margin-top: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(245, 240, 235, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 0.75rem 0.5rem 0.75rem 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 0.0625rem solid var(--border);
+        }
+
+        .nav-bar .back-btn {
+            width: 2.25rem;
+            height: 2.25rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 0.625rem;
+            font-size: 1.125rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-bar .back-btn:active {
+            background: var(--tag-bg);
+        }
+
+        .nav-bar .title {
+            margin-top: 1rem;
+            font-size: 1.0625rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .nav-bar .title .icon {
+            color: var(--primary-light);
+        }
+
+        .nav-bar .spacer {
+            width: 2.25rem;
+        }
+
+        /* ===== 日期栏 ===== */
+        .date-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem 0.5rem 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .date-bar .greeting {
+            font-weight: 500;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .date-bar .greeting .icon {
+            color: var(--primary-light);
+        }
+
+        .date-bar .date-text {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .date-bar .date-text .icon {
+            color: var(--primary-light);
+        }
+
+        /* ===== 主页卡片网格 ===== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.625rem;
+            padding: 0.25rem 0 0.5rem;
+        }
+
+        .card-item {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 0.75rem 0.7rem 0.6rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            position: relative;
+        }
+
+        .card-item:active {
+            transform: scale(0.97);
+            box-shadow: 0 0.0625rem 0.25rem rgba(111, 78, 55, 0.1);
+        }
+
+        .card-item .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.2rem;
+        }
+
+        .card-item .card-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.2;
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+        }
+
+        .card-item .roast-badge {
+            font-size: 0.55rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 0.3rem;
+            background: var(--tag-bg);
+            color: var(--text-secondary);
+            font-weight: 500;
+            flex-shrink: 0;
+            margin-left: 0.3rem;
+            margin-top: 0.1rem;
+        }
+
+        .card-item .roast-badge[data-roast="浅烘"] {
+            background: #EEDFC0;
+            color: #7A5A3A;
+        }
+
+        .card-item .roast-badge[data-roast="中浅"] {
+            background: #D1B08C;
+            color: #5A3A22;
+        }
+
+        .card-item .roast-badge[data-roast="中烘"] {
+            background: #B28B66;
+            color: #FFF;
+        }
+
+        .card-item .roast-badge[data-roast="中深"] {
+            background: #8F6B4C;
+            color: #FFF;
+        }
+
+        .card-item .roast-badge[data-roast="深烘"] {
+            background: #6F4E37;
+            color: #FFF;
+        }
+
+        .card-item .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin: 0.2rem 0 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .card-item .card-meta .method-icon {
+            font-size: 0.7rem;
+            color: var(--primary-light);
+        }
+
+        .card-item .card-meta .divider {
+            opacity: 0.3;
+        }
+
+        .card-item .card-params {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.2rem 0.5rem;
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            margin: 0.15rem 0 0.25rem;
+            padding: 0.2rem 0;
+            border-top: 0.0625rem solid var(--border);
+            border-bottom: 0.0625rem solid var(--border);
+        }
+
+        .card-item .card-params span {
+            white-space: nowrap;
+        }
+
+        .card-item .card-params .param-val {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .card-item .card-flavors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.2rem;
+            margin: 0.2rem 0 0.15rem;
+        }
+
+        .card-item .card-flavors .flavor-dot {
+            font-size: 0.55rem;
+            padding: 0.05rem 0.4rem;
+            border-radius: 0.6rem;
+            background: var(--tag-bg);
+            color: var(--text-secondary);
+            border: 0.0625rem solid var(--border);
+        }
+
+        .card-item .card-flavors .flavor-dot.active {
+            background: #F5EDE3;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .card-item .card-date {
+            font-size: 0.6rem;
+            color: var(--text-placeholder);
+            margin-top: 0.15rem;
+            text-align: right;
+        }
+
+        /* ===== 浮动按钮 ===== */
+        .fab {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #FFF;
+            border: none;
+            box-shadow: 0 0.25rem 1.25rem rgba(111, 78, 55, 0.35);
+            font-size: 1.6rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 50;
+        }
+
+        .fab:active {
+            transform: translateX(-50%) scale(0.92);
+        }
+
+        .fab .icon {
+            width: 1.6rem;
+            height: 1.6rem;
+            stroke: #FFF;
+        }
+
+        /* ===== 空状态 ===== */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.5rem;
+            color: var(--text-placeholder);
+            text-align: center;
+        }
+
+        .empty-state .icon {
+            width: 3rem;
+            height: 3rem;
+            stroke: var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            font-size: 0.875rem;
+        }
+
+        /* ===== 录入页面样式 ===== */
+        .content {
+            padding: 0.5rem 0;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.125rem 1.125rem 1rem;
+            margin-bottom: 0.875rem;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-header .icon-wrap {
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9375rem;
+            color: var(--primary);
+            background: var(--accent-bg);
+        }
+
+        .card-header .icon-wrap .icon {
+            width: 1.1rem;
+            height: 1.1rem;
+            stroke: currentColor;
+        }
+
+        .card-header .label {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .card-header .extra {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--text-placeholder);
+        }
+
+        /* 豆子表单 */
+        .bean-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .bean-form .field-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .bean-form .field-group .field-label {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            width: 3.6rem;
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+
+        .bean-form .field-group .field-input {
+            flex: 1;
+            border: 0.0625rem solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text);
+            background: var(--accent-bg);
+            outline: none;
+            font-family: inherit;
+            transition: border 0.2s;
+            min-width: 0;
+        }
+
+        .bean-form .field-group .field-input:focus {
+            border-color: var(--primary-light);
+        }
+
+        .bean-form .field-group .field-input::placeholder {
+            color: var(--text-placeholder);
+        }
+
+        /* ===== 字符计数 ===== */
+        .char-count {
+            font-size: 0.6rem;
+            color: var(--text-placeholder);
+            flex-shrink: 0;
+            margin-left: 0.4rem;
+            min-width: 2.6rem;
+            text-align: right;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            user-select: none;
+        }
+
+        .char-count.warning {
+            color: var(--danger);
+        }
+
+        .char-count-note {
+            display: block;
+            text-align: right;
+            font-size: 0.6rem;
+            color: var(--text-placeholder);
+            margin-top: 0.25rem;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            user-select: none;
+        }
+
+        .char-count-note.warning {
+            color: var(--danger);
+        }
+
+        /* 烘焙度 */
+        .roast-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .roast-chip {
+            padding: 0.4rem 0.9rem;
+            border-radius: 1.25rem;
+            font-size: 0.75rem;
+            background: var(--tag-bg);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 0.09375rem solid transparent;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .roast-chip:active {
+            transform: scale(0.96);
+        }
+
+        .roast-chip.active[data-roast="浅烘"] {
+            background: #EEDFC0;
+            border-color: #D4A373;
+            color: #3C2A1E;
+        }
+
+        .roast-chip.active[data-roast="中浅"] {
+            background: #D1B08C;
+            border-color: #B88A5C;
+            color: #FFF;
+        }
+
+        .roast-chip.active[data-roast="中烘"] {
+            background: #B28B66;
+            border-color: #9C6E4B;
+            color: #FFF;
+        }
+
+        .roast-chip.active[data-roast="中深"] {
+            background: #8F6B4C;
+            border-color: #7B5438;
+            color: #FFF;
+        }
+
+        .roast-chip.active[data-roast="深烘"] {
+            background: #6F4E37;
+            border-color: #5A3A24;
+            color: #FFF;
+        }
+
+        /* 冲煮方式 */
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.625rem;
+            margin-top: 0.25rem;
+        }
+
+        .method-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.75rem 0.25rem;
+            border-radius: 0.75rem;
+            background: var(--accent-bg);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 0.125rem solid transparent;
+            font-size: 0.875rem;
+        }
+
+        .method-item:active {
+            transform: scale(0.96);
+        }
+
+        .method-item.active {
+            background: #F5EDE3;
+            border-color: var(--primary);
+        }
+
+        .method-item .method-icon .icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            stroke: var(--primary-light);
+        }
+
+        .method-item .method-name {
+            font-size: 0.6875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .method-item.active .method-name {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* 滤杯 */
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .chip {
+            padding: 0.5rem 1rem;
+            border-radius: 1.25rem;
+            font-size: 0.8125rem;
+            background: var(--tag-bg);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 0.09375rem solid transparent;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .chip:active {
+            transform: scale(0.96);
+        }
+
+        .chip.active {
+            background: var(--primary);
+            color: #FFF;
+            border-color: var(--primary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* 参数行 */
+        .form-row {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 0.0625rem solid var(--border);
+        }
+
+        .form-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .form-row:first-of-type {
+            padding-top: 0;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            width: 4.5rem;
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+
+        .form-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 0.9375rem;
+            color: var(--text);
+            background: transparent;
+            text-align: right;
+            font-family: inherit;
+        }
+
+        .form-unit {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-left: 0.25rem;
+            flex-shrink: 0;
+            width: 1.5rem;
+        }
+
+        .stepper {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-left: auto;
+        }
+
+        .stepper-btn {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            border: 0.09375rem solid var(--border);
+            background: var(--accent-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--primary);
+            transition: all 0.15s;
+            padding: 0;
+        }
+
+        .stepper-btn:active {
+            background: var(--tag-bg);
+            transform: scale(0.92);
+        }
+
+        .stepper-btn .icon {
+            width: 1rem;
+            height: 1rem;
+            stroke: currentColor;
+        }
+
+        .stepper-value {
+            width: 3rem;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* 研磨度点击输入 */
+        .grind-clickable {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            background: var(--accent-bg);
+            border: 0.09375rem solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 3rem;
+            text-align: center;
+            user-select: none;
+            margin-left: auto;
+        }
+
+        .grind-clickable:active {
+            transform: scale(0.94);
+            background: var(--tag-bg);
+        }
+
+        .temp-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0.375rem 0 0.25rem;
+        }
+
+        .temp-value {
+            font-size: 2.5rem;
+            font-weight: 200;
+            color: var(--primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .temp-value span {
+            font-size: 1.125rem;
+            font-weight: 400;
+        }
+
+        .temp-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            border: 0.09375rem solid var(--border);
+            background: var(--accent-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--primary);
+            transition: all 0.15s;
+            padding: 0;
+        }
+
+        .temp-btn:active {
+            background: var(--tag-bg);
+            transform: scale(0.92);
+        }
+
+        .temp-btn .icon {
+            width: 1rem;
+            height: 1rem;
+            stroke: currentColor;
+        }
+
+        /* 计时器 */
+        .timer-section {
+            text-align: center;
+            padding: 0.25rem 0;
+        }
+
+        .timer-display {
+            font-size: 3.5rem;
+            font-weight: 200;
+            color: var(--primary);
+            letter-spacing: 0.125rem;
+            font-variant-numeric: tabular-nums;
+            margin: 0.25rem 0;
+            line-height: 1.1;
+        }
+
+        .timer-display .colon {
+            opacity: 0.4;
+        }
+
+        .timer-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .timer-btn {
+            width: 3.25rem;
+            height: 3.25rem;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            color: var(--primary-light);
+            background: var(--tag-bg);
+            transition: all 0.2s;
+            padding: 0;
+        }
+
+        .timer-btn:active {
+            transform: scale(0.92);
+        }
+
+        .timer-btn .icon {
+            width: 1.2rem;
+            height: 1.2rem;
+            stroke: currentColor;
+        }
+
+        .timer-btn.start {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #FFF;
+            box-shadow: 0 0.25rem 1rem rgba(111, 78, 55, 0.3);
+            font-size: 1.4rem;
+        }
+
+        .timer-btn.start .icon {
+            stroke: #FFF;
+            width: 1.6rem;
+            height: 1.6rem;
+        }
+
+        .timer-btn.secondary .icon {
+            stroke: var(--primary-light);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.15rem 0.6rem;
+            border-radius: 0.375rem;
+            font-size: 0.6875rem;
+            font-weight: 500;
+        }
+
+        .status-badge.recording {
+            background: #FFF0F0;
+            color: var(--danger);
+        }
+
+        .status-badge.recording .dot {
+            width: 0.375rem;
+            height: 0.375rem;
+            border-radius: 50%;
+            background: var(--danger);
+            animation: blink 1s infinite;
+            display: inline-block;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* 注水段 */
+        .pour-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+        }
+
+        .pour-step {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.75rem 0.875rem;
+            background: var(--accent-bg);
+            border-radius: 0.75rem;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .pour-step .step-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .pour-step .step-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .pour-step .step-title {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .pour-step .step-detail {
+            font-size: 0.6875rem;
+            color: var(--text-secondary);
+        }
+
+        .pour-step .step-amount {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--primary);
+            flex-shrink: 0;
+            margin-right: 0.5rem;
+        }
+
+        .pour-step .step-amount span {
+            font-size: 0.6875rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        .pour-step .step-actions {
+            display: flex;
+            gap: 0.3rem;
+            flex-shrink: 0;
+        }
+
+        .pour-step .step-actions button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: var(--text-placeholder);
+            padding: 0.2rem 0.3rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pour-step .step-actions button:hover {
+            background: var(--border);
+        }
+
+        .pour-step .step-actions button.edit-btn {
+            color: var(--primary-light);
+        }
+
+        .pour-step .step-actions button.delete-btn {
+            color: var(--danger);
+        }
+
+        .pour-step .step-actions button:active {
+            transform: scale(0.9);
+        }
+
+        .pour-step .step-actions button .icon {
+            width: 0.9rem;
+            height: 0.9rem;
+            stroke: currentColor;
+        }
+
+        .add-step-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.625rem;
+            border: 0.125rem dashed var(--border);
+            border-radius: 0.75rem;
+            background: none;
+            cursor: pointer;
+            font-size: 0.8125rem;
+            color: var(--text-placeholder);
+            transition: all 0.2s;
+        }
+
+        .add-step-btn:active {
+            border-color: var(--primary-light);
+            color: var(--primary-light);
+        }
+
+        .add-step-btn .icon {
+            width: 0.9rem;
+            height: 0.9rem;
+            stroke: currentColor;
+        }
+
+        /* ---- 注水段合计 ---- */
+        .pour-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0.875rem;
+            margin-top: 0.625rem;
+            background: #F5F0EB;
+            border-radius: 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        .pour-summary .sum-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .pour-summary .sum-value {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .pour-summary .sum-value .unit {
+            font-weight: 400;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+        }
+
+        .pour-summary .sum-value.match {
+            color: var(--success);
+        }
+
+        .pour-summary .sum-value.mismatch {
+            color: var(--danger);
+        }
+
+        .pour-summary .sum-hint {
+            font-size: 0.6rem;
+            color: var(--text-placeholder);
+            margin-left: 0.5rem;
+        }
+
+        /* 风味标签 (录入页) */
+        .flavor-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .flavor-tag {
+            padding: 0.4rem 0.9rem;
+            border-radius: 1.25rem;
+            font-size: 0.75rem;
+            background: var(--tag-bg);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 0.09375rem solid transparent;
+            user-select: none;
+        }
+
+        .flavor-tag:active {
+            transform: scale(0.96);
+        }
+
+        .flavor-tag.active {
+            background: #F5EDE3;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* 笔记 */
+        .note-area {
+            width: 100%;
+            border: none;
+            outline: none;
+            resize: none;
+            font-size: 0.875rem;
+            color: var(--text);
+            background: var(--accent-bg);
+            border-radius: 0.75rem;
+            padding: 0.875rem;
+            min-height: 5rem;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .note-area::placeholder {
+            color: var(--text-placeholder);
+        }
+
+        /* 底部操作栏 (录入页) */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: var(--max-width);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 0.75rem 1.25rem;
+            padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+            display: flex;
+            justify-content: center;
+            border-top: 0.0625rem solid var(--border);
+            z-index: 100;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            max-width: 18rem;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #FFF;
+            box-shadow: 0 0.25rem 1rem rgba(111, 78, 55, 0.25);
+        }
+
+        .btn-primary .icon {
+            width: 1.1rem;
+            height: 1.1rem;
+            stroke: #FFF;
+        }
+
+        /* 注水段模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            padding: 1.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: var(--card);
+            border-radius: 1.25rem;
+            width: 100%;
+            max-width: 380px;
+            padding: 1.5rem 1.5rem 1.25rem;
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.2);
+            transform: scale(0.95) translateY(0.5rem);
+            transition: transform 0.25s ease;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-box .modal-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1.25rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .modal-box .modal-title .icon {
+            width: 1.2rem;
+            height: 1.2rem;
+            stroke: currentColor;
+        }
+
+        .modal-box .modal-field {
+            margin-bottom: 1rem;
+        }
+
+        .modal-box .modal-field label {
+            display: block;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .modal-box .modal-field input[type="number"],
+        .modal-box .modal-field input[type="text"] {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 0.0625rem solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 0.9375rem;
+            background: var(--accent-bg);
+            outline: none;
+            font-family: inherit;
+        }
+
+        .modal-box .modal-field input:focus {
+            border-color: var(--primary-light);
+        }
+
+        .modal-box .time-row {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .modal-box .time-row .time-col {
+            flex: 1;
+        }
+
+        .modal-box .time-row .time-col input {
+            width: 100%;
+        }
+
+        .modal-box .time-row .time-col label {
+            margin-bottom: 0.1rem;
+        }
+
+        .modal-box .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-box .modal-actions button {
+            flex: 1;
+            padding: 0.7rem;
+            border-radius: 0.75rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-box .modal-actions button:active {
+            transform: scale(0.97);
+        }
+
+        .modal-box .modal-actions .btn-cancel {
+            background: var(--tag-bg);
+            color: var(--text-secondary);
+        }
+
+        .modal-box .modal-actions .btn-confirm {
+            background: var(--primary);
+            color: #FFF;
+            box-shadow: 0 0.25rem 0.75rem rgba(111, 78, 55, 0.2);
+        }
+
+        /* 研磨度弹窗 */
+        #grindModal .modal-field input {
+            font-size: 1.25rem;
+            padding: 0.6rem 0.75rem;
+            text-align: center;
+        }
+
+        #grindModal .modal-field .range-hint {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-placeholder);
+            margin-top: 0.2rem;
+        }
+
+        /* ===== 自定义弹窗 ===== */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 1.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .custom-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .custom-modal-content {
+            background: var(--card);
+            border-radius: 1.25rem;
+            max-width: 400px;
+            width: 100%;
+            padding: 1.5rem 1.5rem 1.25rem;
+            box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.2);
+            transform: scale(0.95) translateY(0.5rem);
+            transition: transform 0.25s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .custom-modal-overlay.active .custom-modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .custom-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .custom-modal-header .modal-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .custom-modal-header .modal-title .icon {
+            width: 1.2rem;
+            height: 1.2rem;
+            stroke: currentColor;
+        }
+
+        .custom-modal-header .modal-close-btn {
+            width: 2rem;
+            height: 2rem;
+            border: none;
+            background: var(--tag-bg);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            padding: 0;
+        }
+
+        .custom-modal-header .modal-close-btn .icon {
+            width: 1.1rem;
+            height: 1.1rem;
+            stroke: currentColor;
+        }
+
+        .custom-modal-header .modal-close-btn:hover {
+            background: var(--border);
+        }
+
+        .custom-modal-header .modal-close-btn:active {
+            transform: scale(0.92);
+        }
+
+        .custom-modal-body {
+            font-size: 0.9375rem;
+            color: var(--text);
+            line-height: 1.6;
+            padding: 0.25rem 0 0.5rem;
+        }
+
+        .custom-modal-body .record-summary {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .custom-modal-body .record-summary .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .custom-modal-body .record-summary .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            border-bottom: 0.0625rem solid var(--border);
+        }
+
+        .custom-modal-body .record-summary .row:last-child {
+            border-bottom: none;
+        }
+
+        .custom-modal-body .record-summary .label {
+            color: var(--text-secondary);
+        }
+
+        .custom-modal-footer {
+            margin-top: 1.25rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .custom-modal-footer .modal-confirm-btn {
+            padding: 0.6rem 1.8rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #FFF;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 0.25rem 0.75rem rgba(111, 78, 55, 0.2);
+        }
+
+        .custom-modal-footer .modal-confirm-btn:active {
+            transform: scale(0.97);
+        }
+
+        .custom-modal-footer .modal-danger-btn {
+            padding: 0.6rem 1.8rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            background: var(--danger);
+            color: #FFF;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 0.25rem 0.75rem rgba(192, 57, 43, 0.2);
+        }
+
+        .custom-modal-footer .modal-danger-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== 卡片详情弹窗 (轻提示) ===== */
+        .toast-detail {
+            position: fixed;
+            bottom: 6rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.15);
+            max-width: calc(var(--max-width) - 2rem);
+            width: 90%;
+            z-index: 60;
+            border: 0.0625rem solid var(--border);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            transform: translateX(-50%) translateY(1rem);
+        }
+
+        .toast-detail.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast-detail .toast-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toast-detail .toast-title .toast-delete-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.375rem;
+            background: rgba(192, 57, 43, 0.1);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .toast-detail .toast-title .toast-delete-btn:active {
+            transform: scale(0.95);
+            background: rgba(192, 57, 43, 0.2);
+        }
+
+        .toast-detail .toast-title .toast-delete-btn .icon {
+            width: 0.9rem;
+            height: 0.9rem;
+            stroke: currentColor;
+        }
+
+        .toast-detail .toast-body {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .toast-detail .toast-close {
+            margin-top: 0.6rem;
+            text-align: right;
+            font-size: 0.75rem;
+            color: var(--primary-light);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .toast-detail .toast-close:active {
+            opacity: 0.6;
+        }
+
+        /* 注水段在详情中的样式 */
+        .pour-detail-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            margin-top: 0.3rem;
+            border-top: 0.0625rem solid var(--border);
+            padding-top: 0.3rem;
+        }
+
+        .pour-detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            padding: 0.1rem 0;
+        }
+
+        .pour-detail-row .pd-label {
+            font-weight: 500;
+            color: var(--text-placeholder);
+        }
+
+        .pour-detail-row .pd-val {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 430px) {
+            :root {
+                --font-base: 15px;
+            }
+
+            .timer-display {
+                font-size: 3rem;
+            }
+
+            .temp-value {
+                font-size: 2.2rem;
+            }
+
+            .card-item .card-name {
+                font-size: 0.75rem;
+            }
+
+            .card-item .card-params {
+                font-size: 0.55rem;
+                gap: 0.1rem 0.3rem;
+            }
+
+            .card-item .card-meta {
+                font-size: 0.6rem;
+            }
+
+            .card-item .card-flavors .flavor-dot {
+                font-size: 0.5rem;
+                padding: 0.05rem 0.3rem;
+            }
+
+            .card-item .roast-badge {
+                font-size: 0.5rem;
+                padding: 0.05rem 0.3rem;
+            }
+
+            .card-item {
+                padding: 0.6rem 0.5rem 0.4rem;
+            }
+
+            .custom-modal-content {
+                padding: 1.25rem 1rem 1rem;
+                max-width: 360px;
+            }
+
+            .pour-summary {
+                font-size: 0.7rem;
+                padding: 0.5rem 0.7rem;
+            }
+
+            .pour-summary .sum-value {
+                font-size: 0.875rem;
+            }
+
+            .char-count {
+                font-size: 0.55rem;
+                min-width: 2.2rem;
+            }
+
+            .char-count-note {
+                font-size: 0.55rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            :root {
+                --font-base: 14px;
+            }
+
+            .timer-display {
+                font-size: 2.6rem;
+            }
+
+            .method-grid {
+                gap: 0.4rem;
+            }
+
+            .method-item .method-icon .icon {
+                width: 1.25rem;
+                height: 1.25rem;
+            }
+
+            .method-item .method-name {
+                font-size: 0.625rem;
+            }
+
+            .bean-form .field-group .field-label {
+                width: 3rem;
+                font-size: 0.75rem;
+            }
+
+            .form-label {
+                width: 3.6rem;
+                font-size: 0.8125rem;
+            }
+
+            .stepper-value {
+                width: 2.4rem;
+                font-size: 0.875rem;
+            }
+
+            .card-grid {
+                gap: 0.4rem;
+            }
+
+            .card-item .card-name {
+                font-size: 0.7rem;
+            }
+
+            .card-item .card-params {
+                font-size: 0.5rem;
+            }
+
+            .custom-modal-content {
+                max-width: 320px;
+                padding: 1rem 0.875rem 0.875rem;
+            }
+
+            .char-count {
+                font-size: 0.5rem;
+                min-width: 2rem;
+            }
+
+            .char-count-note {
+                font-size: 0.5rem;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            .app {
+                padding-bottom: 4.5rem;
+            }
+
+            .nav-bar {
+                padding: 0.4rem 0.5rem 0.4rem 0.25rem;
+            }
+
+            .nav-bar .title {
+                font-size: 0.95rem;
+            }
+
+            .card-grid {
+                gap: 0.4rem;
+            }
+
+            .card-item {
+                padding: 0.4rem 0.4rem 0.3rem;
+            }
+
+            .card-item .card-name {
+                font-size: 0.7rem;
+            }
+
+            .card-item .card-meta {
+                font-size: 0.55rem;
+                margin: 0.1rem 0 0.15rem;
+            }
+
+            .card-item .card-params {
+                font-size: 0.5rem;
+                padding: 0.1rem 0;
+                margin: 0.1rem 0 0.15rem;
+            }
+
+            .card-item .card-flavors .flavor-dot {
+                font-size: 0.45rem;
+                padding: 0.05rem 0.25rem;
+            }
+
+            .card-item .roast-badge {
+                font-size: 0.45rem;
+                padding: 0.05rem 0.25rem;
+            }
+
+            .card-item .card-date {
+                font-size: 0.45rem;
+            }
+
+            .fab {
+                width: 2.8rem;
+                height: 2.8rem;
+                font-size: 1.2rem;
+                bottom: 1rem;
+            }
+
+            .date-bar {
+                padding: 0.4rem 0.5rem 0.2rem;
+                font-size: 0.75rem;
+            }
+
+            .custom-modal-content {
+                max-width: 340px;
+                padding: 1rem 1rem 0.875rem;
+            }
+
+            .pour-summary {
+                font-size: 0.65rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .char-count {
+                font-size: 0.5rem;
+                min-width: 2rem;
+            }
+
+            .char-count-note {
+                font-size: 0.5rem;
+            }
+        }
+
+        @media (min-width: 600px) {
+            body {
+                padding: 0.5rem 0.5rem;
+            }
+
+            .app {
+                max-width: 480px;
+                box-shadow: 0 0 2rem rgba(0, 0, 0, 0.06);
+                border-radius: 1.25rem;
+                background: var(--bg);
+                padding: 0 0.75rem 5.5rem;
+            }
+
+            .nav-bar {
+                border-radius: 0.75rem 0.75rem 0 0;
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+
+            .bottom-bar {
+                max-width: 480px;
+                border-radius: 0 0 0.75rem 0.75rem;
+            }
+
+            .fab {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .app {
+                max-width: 520px;
+                padding: 0 1.25rem 5.5rem;
+            }
+
+            .bottom-bar {
+                max-width: 520px;
+            }
+
+            .card-grid {
+                gap: 0.75rem;
+            }
+
+            .custom-modal-content {
+                max-width: 440px;
+            }
+        }
+
+        @media (orientation: landscape) and (min-width: 768px) {
+            .app {
+                max-width: 560px;
+                padding: 0 1.5rem 5.5rem;
+            }
+
+            .bottom-bar {
+                max-width: 560px;
+            }
+
+            .custom-modal-content {
+                max-width: 460px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app" id="app">
+
+        <!-- ============================================================ -->
+        <!-- 主页 (page-home) -->
+        <!-- ============================================================ -->
+        <div class="page active" id="pageHome">
+            <nav class="nav-bar">
+                <span class="title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M10 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M14 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path
+                            d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M6 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    我的冲煮
+                </span>
+                <span class="spacer"></span>
+            </nav>
+            <div class="date-bar">
+                <span class="greeting" id="greetingText">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    下午好
+                </span>
+                <span class="date-text">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M8 2v4" />
+                        <path d="M16 2v4" />
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <path d="M3 10h18" />
+                        <path d="M8 14h.01" />
+                        <path d="M12 14h.01" />
+                        <path d="M16 14h.01" />
+                        <path d="M8 18h.01" />
+                        <path d="M12 18h.01" />
+                        <path d="M16 18h.01" />
+                    </svg>
+                    <span id="homeDateText"></span>
+                </span>
+            </div>
+            <div class="card-grid" id="cardGrid"></div>
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M10 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M14 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M6 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <p>还没有冲煮记录<br />点击下方 <span style="color:var(--primary);font-weight:600;">+</span> 开始记录</p>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 录入页 (page-record) -->
+        <!-- ============================================================ -->
+        <div class="page" id="pageRecord">
+            <nav class="nav-bar">
+                <button class="back-btn" onclick="goHome()">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg>
+                </button>
+                <span class="title">冲煮录入</span>
+                <span class="spacer"></span>
+            </nav>
+            <div class="date-bar" style="justify-content:center;gap:0.5rem;">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M8 2v4" />
+                    <path d="M16 2v4" />
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M3 10h18" />
+                    <path d="M8 14h.01" />
+                    <path d="M12 14h.01" />
+                    <path d="M16 14h.01" />
+                    <path d="M8 18h.01" />
+                    <path d="M12 18h.01" />
+                    <path d="M16 18h.01" />
+                </svg>
+                <span class="date-text" id="recordDate"></span>
+            </div>
+
+            <div class="content">
+
+                <!-- 咖啡豆 -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-wrap" style="background:#FFF0E6;">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M6 11c0 4 2 8 6 8s6-4 6-8" />
+                                <path d="M12 19c-4 0-6-4-6-8s2-8 6-8 6 4 6 8-2 8-6 8z" />
+                                <path d="M12 3v16" />
+                            </svg>
+                        </div>
+                        <span class="label">咖啡豆</span>
+                    </div>
+                    <div class="bean-form">
+                        <div class="field-group">
+                            <span class="field-label">豆名</span>
+                            <!-- 修改：豆名限制20字符 + 字符计数 -->
+                            <input class="field-input" id="beanName" type="text" placeholder="如：埃塞·花魁5.0" value=""
+                                maxlength="20" />
+                            <span class="char-count" id="beanNameCount">0/20</span>
+                        </div>
+                        <div class="field-group">
+                            <span class="field-label">产地</span>
+                            <!-- 修改：产地限制20字符 + 字符计数 -->
+                            <input class="field-input" id="beanOrigin" type="text" placeholder="如：Hambela · 日晒" value=""
+                                maxlength="20" />
+                            <span class="char-count" id="beanOriginCount">0/20</span>
+                        </div>
+                        <div class="field-group" style="align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
+                            <span class="field-label" style="padding-top:0.2rem;">烘焙度</span>
+                            <div class="roast-chips" id="roastChips">
+                                <span class="roast-chip" data-roast="浅烘" onclick="selectRoast(this)">浅烘</span>
+                                <span class="roast-chip active" data-roast="中浅" onclick="selectRoast(this)">中浅</span>
+                                <span class="roast-chip" data-roast="中烘" onclick="selectRoast(this)">中烘</span>
+                                <span class="roast-chip" data-roast="中深" onclick="selectRoast(this)">中深</span>
+                                <span class="roast-chip" data-roast="深烘" onclick="selectRoast(this)">深烘</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 冲煮方式 -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-wrap" style="background:#E8F5E9;">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M10 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M14 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M6 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <span class="label">冲煮方式</span>
+                    </div>
+                    <div class="method-grid" id="methodGrid">
+                        <div class="method-item active" data-method="hand-drip" onclick="selectMethod(this)">
+                            <span class="method-icon">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M10 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M14 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path
+                                        d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M6 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <span class="method-name">手冲</span>
+                        </div>
+                        <div class="method-item" data-method="french-press" onclick="selectMethod(this)">
+                            <span class="method-icon">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M10 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M14 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path
+                                        d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M6 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <span class="method-name">法压</span>
+                        </div>
+                        <div class="method-item" data-method="aeropress" onclick="selectMethod(this)">
+                            <span class="method-icon">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M10 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M14 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path
+                                        d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M6 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <span class="method-name">爱乐压</span>
+                        </div>
+                        <div class="method-item" data-method="moka" onclick="selectMethod(this)">
+                            <span class="method-icon">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M10 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M14 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path
+                                        d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M6 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <span class="method-name">摩卡壶</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 滤杯 -->
+                <div class="card" id="filterCard">
+                    <div class="card-header">
+                        <div class="icon-wrap" style="background:#E3F2FD;">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M10 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M14 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M6 2v2" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <span class="label">滤杯</span>
+                    </div>
+                    <div class="filter-chips" id="filterChips">
+                        <span class="chip active" onclick="selectChip(this)">V60</span>
+                        <span class="chip" onclick="selectChip(this)">蛋糕杯</span>
+                        <span class="chip" onclick="selectChip(this)">折纸杯</span>
+                        <span class="chip" onclick="selectChip(this)">KONO</span>
+                        <span class="chip" onclick="selectChip(this)">Chemex</span>
+                        <span class="chip" onclick="selectChip(this)">平底杯</span>
+                    </div>
+                </div>
+
+                <!-- 冲煮参数 -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-wrap" style="background:#FFF3E0;">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <line x1="4" y1="21" x2="4" y2="14" />
+                                <line x1="4" y1="10" x2="4" y2="3" />
+                                <line x1="12" y1="21" x2="12" y2="12" />
+                                <line x1="12" y1="8" x2="12" y2="3" />
+                                <line x1="20" y1="21" x2="20" y2="16" />
+                                <line x1="20" y1="12" x2="20" y2="3" />
+                                <line x1="1" y1="14" x2="7" y2="14" />
+                                <line x1="9" y1="8" x2="15" y2="8" />
+                                <line x1="17" y1="16" x2="23" y2="16" />
+                            </svg>
+                        </div>
+                        <span class="label">冲煮参数</span>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">研磨度</span>
+                        <span class="grind-clickable" id="grindDisplay" onclick="openGrindModal()">5</span>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">粉量</span>
+                        <div class="stepper">
+                            <button class="stepper-btn" onclick="stepValue('dose', -0.5)">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                            <span class="stepper-value" id="doseValue">15.0</span>
+                            <button class="stepper-btn" onclick="stepValue('dose', 0.5)">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">粉水比</span>
+                        <div class="stepper">
+                            <button class="stepper-btn" onclick="stepValue('ratio', -1)">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                            <span class="stepper-value" id="ratioValue">1:15</span>
+                            <button class="stepper-btn" onclick="stepValue('ratio', 1)">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row" style="flex-direction:column;align-items:stretch;gap:0.25rem;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <span class="form-label" style="width:auto;">水温</span>
+                            <span class="form-unit" style="width:auto;">°C</span>
+                        </div>
+                        <div class="temp-control">
+                            <button class="temp-btn" onclick="stepValue('temp', -1)">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                            <span class="temp-value" id="tempValue">92<span>°C</span></span>
+                            <button class="temp-btn" onclick="stepValue('temp', 1)">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <span class="form-label">总水量</span>
+                        <span class="form-input" id="waterTotal"
+                            style="text-align:right;font-weight:600;color:var(--primary);">225</span>
+                        <span class="form-unit">ml</span>
+                    </div>
+                </div>
+
+                <!-- 计时器 -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-wrap" style="background:#FCE4EC;">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </div>
+                        <span class="label">冲煮计时</span>
+                        <span class="status-badge recording" id="timerStatus" style="display:none;">
+                            <span class="dot"></span>录制中
+                        </span>
+                    </div>
+                    <div class="timer-section">
+                        <div class="timer-display" id="timerDisplay">0<span class="colon">:</span>00</div>
+                        <div class="timer-controls">
+                            <button class="timer-btn secondary" onclick="resetTimer()">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M23 4v6h-6" />
+                                    <path d="M1 20v-6h6" />
+                                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10" />
+                                    <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14" />
+                                </svg>
+                            </button>
+                            <button class="timer-btn start" id="timerStartBtn" onclick="toggleTimer()">
+                                <svg class="icon" viewBox="0 0 24 24" id="playIcon">
+                                    <polygon points="5 3 19 12 5 21" />
+                                </svg>
+                            </button>
+                            <button class="timer-btn secondary" onclick="recordLap()">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M4 21v-7" />
+                                    <path d="M4 14V4h8l2 4h6v7H4z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 注水段 -->
+                <div class="card" id="pourCard">
+                    <div class="card-header">
+                        <div class="icon-wrap" style="background:#E8EAF6;">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path
+                                    d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z" />
+                                <path
+                                    d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" />
+                            </svg>
+                        </div>
+                        <span class="label">注水段</span>
+                        <span class="extra" id="pourTotal">总计 225ml</span>
+                    </div>
+                    <div class="pour-section">
+                        <div class="pour-steps" id="pourSteps"></div>
+                        <div class="pour-summary" id="pourSummary">
+                            <span class="sum-label">💧 注水段合计</span>
+                            <span>
+                                <span class="sum-value" id="pourSumValue">0<span class="unit"> ml</span></span>
+                                <span class="sum-hint" id="pourSumHint"></span>
+                            </span>
+                        </div>
+                        <button class="add-step-btn" onclick="openAddModal()">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            添加注水段
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 风味标签 (最多选3个) -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-wrap" style="background:#F3E5F5;">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path
+                                    d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M7 7.5a0.5 0.5 0 1 1 1 0 0.5 0.5 0 1 1-1 0z" fill="currentColor" />
+                            </svg>
+                        </div>
+                        <span class="label">风味标签 <span
+                                style="font-size:0.7rem;font-weight:400;color:var(--text-placeholder);">(最多选3个)</span></span>
+                    </div>
+                    <div class="flavor-tags" id="flavorTags">
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">花香</span>
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">柑橘</span>
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">莓果</span>
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">热带水果</span>
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">坚果</span>
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">巧克力</span>
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">焦糖</span>
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">茶感</span>
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">酒香</span>
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">蜂蜜</span>
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">香料</span>
+                        <span class="flavor-tag" onclick="toggleFlavor(this)">草本</span>
+                    </div>
+                </div>
+
+                <!-- 笔记 -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-wrap" style="background:#E0F2F1;">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                            </svg>
+                        </div>
+                        <span class="label">冲煮笔记</span>
+                    </div>
+                    <!-- 修改：笔记限制100字符 + 字符计数 -->
+                    <textarea class="note-area" id="noteArea" maxlength="100"
+                        placeholder="记录这次冲煮的心得体会…&#10;如：水温略低，酸质不够明亮，下次尝试93°C"></textarea>
+                    <span class="char-count-note" id="noteCount">0/100</span>
+                </div>
+
+            </div>
+
+            <!-- 底部操作栏 -->
+            <div class="bottom-bar">
+                <button class="btn btn-primary" onclick="saveRecord()">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                        <polyline points="17 21 17 13 7 13 7 21" />
+                        <polyline points="7 3 7 8 15 8" />
+                    </svg>
+                    保存记录
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 浮动按钮 (主页) -->
+        <!-- ============================================================ -->
+        <button class="fab" id="fabBtn" onclick="goRecord()">
+            <svg class="icon" viewBox="0 0 24 24">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+        </button>
+
+        <!-- ============================================================ -->
+        <!-- 注水段模态框 -->
+        <!-- ============================================================ -->
+        <div class="modal-overlay" id="pourModal">
+            <div class="modal-box">
+                <div class="modal-title" id="modalTitle">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    添加注水段
+                </div>
+                <div class="modal-field">
+                    <label>注水量 (ml)</label>
+                    <input type="number" id="modalAmount" value="30" min="0" step="5" />
+                </div>
+                <div class="modal-field">
+                    <label>开始时间</label>
+                    <div class="time-row">
+                        <div class="time-col">
+                            <label style="font-size:0.7rem;">分</label>
+                            <input type="number" id="modalStartMin" value="0" min="0" max="99" />
+                        </div>
+                        <div class="time-col">
+                            <label style="font-size:0.7rem;">秒</label>
+                            <input type="number" id="modalStartSec" value="0" min="0" max="59" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-field">
+                    <label>结束时间</label>
+                    <div class="time-row">
+                        <div class="time-col">
+                            <label style="font-size:0.7rem;">分</label>
+                            <input type="number" id="modalEndMin" value="0" min="0" max="99" />
+                        </div>
+                        <div class="time-col">
+                            <label style="font-size:0.7rem;">秒</label>
+                            <input type="number" id="modalEndSec" value="0" min="0" max="59" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="closeModal()">取消</button>
+                    <button class="btn-confirm" onclick="confirmModal()">确定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 研磨度输入模态框 -->
+        <!-- ============================================================ -->
+        <div class="modal-overlay" id="grindModal">
+            <div class="modal-box">
+                <div class="modal-title">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <line x1="4" y1="21" x2="4" y2="14" />
+                        <line x1="4" y1="10" x2="4" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="12" />
+                        <line x1="12" y1="8" x2="12" y2="3" />
+                        <line x1="20" y1="21" x2="20" y2="16" />
+                        <line x1="20" y1="12" x2="20" y2="3" />
+                        <line x1="1" y1="14" x2="7" y2="14" />
+                        <line x1="9" y1="8" x2="15" y2="8" />
+                        <line x1="17" y1="16" x2="23" y2="16" />
+                    </svg>
+                    研磨度
+                </div>
+                <div class="modal-field">
+                    <label>请输入研磨度 (1~70)</label>
+                    <input type="number" id="grindInput" value="5" min="1" max="70" step="1" />
+                    <div class="range-hint">范围 1 ~ 70</div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="closeGrindModal()">取消</button>
+                    <button class="btn-confirm" onclick="confirmGrindModal()">确定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 卡片详情弹窗 (含删除按钮) -->
+        <!-- ============================================================ -->
+        <div class="toast-detail" id="detailToast">
+            <div class="toast-title" id="toastTitle">
+                <span>埃塞·花魁5.0</span>
+                <button class="toast-delete-btn" onclick="deleteCurrentDetail()">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        <line x1="10" y1="11" x2="10" y2="17" />
+                        <line x1="14" y1="11" x2="14" y2="17" />
+                    </svg>
+                    删除
+                </button>
+            </div>
+            <div class="toast-body" id="toastBody"></div>
+            <div class="toast-close" onclick="closeToast()">知道了</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 自定义弹窗 (替换 alert) -->
+        <!-- ============================================================ -->
+        <div class="custom-modal-overlay" id="customModal">
+            <div class="custom-modal-content">
+                <div class="custom-modal-header">
+                    <span class="modal-title" id="modalTitleText">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="16" x2="12" y2="12" />
+                            <line x1="12" y1="8" x2="12" y2="8" />
+                        </svg>
+                        提示
+                    </span>
+                    <button class="modal-close-btn" onclick="closeCustomModal()">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="custom-modal-body" id="modalBodyContent"></div>
+                <div class="custom-modal-footer" id="modalFooter">
+                    <button class="modal-confirm-btn" id="modalConfirmBtn" onclick="closeCustomModal()">确定</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ================================================================
+        //  数据存储 - localStorage 持久化
+        // ================================================================
+        let brewRecords = [];
+        let currentDetailIndex = -1;
+        const STORAGE_KEY = 'brew_records_data';
+
+        function loadFromStorage() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                if (data) {
+                    brewRecords = JSON.parse(data);
+                    brewRecords = brewRecords.filter(r => r && typeof r === 'object');
+                    brewRecords.forEach(r => {
+                        if (!r.pourSteps) r.pourSteps = [];
+                        if (!r.flavors) r.flavors = [];
+                        if (!r.note) r.note = '';
+                    });
+                } else {
+                    brewRecords = [];
+                }
+            } catch (e) {
+                brewRecords = [];
+            }
+            renderCards();
+        }
+
+        function saveToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(brewRecords));
+            } catch (e) {
+                console.warn('保存到localStorage失败:', e);
+            }
+        }
+
+        // ================================================================
+        //  自定义弹窗 (替换 alert)
+        // ================================================================
+        let modalOnClose = null;
+
+        function showCustomModal(title, message, onClose, isHTML = false, btnText = '确定', dangerBtn = false, dangerText = '',
+            dangerAction = null) {
+            const overlay = document.getElementById('customModal');
+            const titleEl = document.getElementById('modalTitleText');
+            const bodyEl = document.getElementById('modalBodyContent');
+            const footer = document.getElementById('modalFooter');
+
+            titleEl.innerHTML = title;
+            if (isHTML) {
+                bodyEl.innerHTML = message;
+            } else {
+                bodyEl.textContent = message;
+            }
+
+            footer.innerHTML = '';
+            if (dangerBtn && dangerText && dangerAction) {
+                const dangerBtnEl = document.createElement('button');
+                dangerBtnEl.className = 'modal-danger-btn';
+                dangerBtnEl.textContent = dangerText;
+                dangerBtnEl.onclick = function (e) {
+                    e.stopPropagation();
+                    closeCustomModal();
+                    dangerAction();
+                };
+                footer.appendChild(dangerBtnEl);
+            }
+            const confirmBtnEl = document.createElement('button');
+            confirmBtnEl.className = 'modal-confirm-btn';
+            confirmBtnEl.textContent = btnText;
+            confirmBtnEl.onclick = function () {
+                closeCustomModal();
+            };
+            footer.appendChild(confirmBtnEl);
+
+            modalOnClose = onClose || null;
+            overlay.classList.add('active');
+        }
+
+        function closeCustomModal() {
+            const overlay = document.getElementById('customModal');
+            overlay.classList.remove('active');
+            if (modalOnClose) {
+                const cb = modalOnClose;
+                modalOnClose = null;
+                cb();
+            }
+        }
+
+        document.getElementById('customModal').addEventListener('click', function (e) {
+            if (e.target === this) closeCustomModal();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                const overlay = document.getElementById('customModal');
+                if (overlay.classList.contains('active')) closeCustomModal();
+            }
+        });
+
+        // ================================================================
+        //  初始化数据
+        // ================================================================
+        function initData() {
+            loadFromStorage();
+            // 初始化字符计数
+            initCharCounters();
+        }
+
+        // ================================================================
+        //  字符计数 (新增)
+        // ================================================================
+        function initCharCounters() {
+            // 豆名
+            const beanNameInput = document.getElementById('beanName');
+            const beanNameCount = document.getElementById('beanNameCount');
+            beanNameInput.addEventListener('input', function () {
+                const len = this.value.length;
+                beanNameCount.textContent = len + '/20';
+                beanNameCount.classList.toggle('warning', len >= 20);
+            });
+            // 初始化显示
+            beanNameCount.textContent = beanNameInput.value.length + '/20';
+
+            // 产地
+            const beanOriginInput = document.getElementById('beanOrigin');
+            const beanOriginCount = document.getElementById('beanOriginCount');
+            beanOriginInput.addEventListener('input', function () {
+                const len = this.value.length;
+                beanOriginCount.textContent = len + '/20';
+                beanOriginCount.classList.toggle('warning', len >= 20);
+            });
+            beanOriginCount.textContent = beanOriginInput.value.length + '/20';
+
+            // 笔记
+            const noteArea = document.getElementById('noteArea');
+            const noteCount = document.getElementById('noteCount');
+            noteArea.addEventListener('input', function () {
+                const len = this.value.length;
+                noteCount.textContent = len + '/100';
+                noteCount.classList.toggle('warning', len >= 100);
+            });
+            noteCount.textContent = noteArea.value.length + '/100';
+        }
+
+        // ================================================================
+        //  主页渲染 (无删除按钮)
+        // ================================================================
+        function renderCards() {
+            const grid = document.getElementById('cardGrid');
+            const empty = document.getElementById('emptyState');
+
+            if (brewRecords.length === 0) {
+                grid.innerHTML = '';
+                empty.style.display = 'flex';
+                return;
+            }
+            empty.style.display = 'none';
+
+            grid.innerHTML = brewRecords.map((record, index) => {
+                const flavorsHtml = (record.flavors || []).slice(0, 3).map(f =>
+                    `<span class="flavor-dot active">${f}</span>`
+                ).join('');
+                const extraFlavors = (record.flavors || []).length > 3 ?
+                    `<span class="flavor-dot">+${record.flavors.length - 3}</span>` : '';
+
+                let methodIcon = '';
+                if (record.method === '手冲') {
+                    methodIcon =
+                        `<svg class="icon" viewBox="0 0 24 24"><path d="M10 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+                } else if (record.method === '法压') {
+                    methodIcon =
+                        `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8 2h8"/><path d="M7 16h10"/></svg>`;
+                } else if (record.method === '爱乐压') {
+                    methodIcon =
+                        `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m18 2 4 4"/><path d="m17 7 3-3"/><path d="M19 9 8.7 19.3c-.6.6-1.4.9-2.3.9H5v-1.4c0-.9.3-1.7.9-2.3L15 7"/><path d="M9 11 5 15"/><path d="M13 7 9 11"/></svg>`;
+                } else if (record.method === '摩卡壶') {
+                    methodIcon =
+                        `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`;
+                } else {
+                    methodIcon =
+                        `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M12 21v-4"/><path d="M6 4h12"/><path d="M6 4v10a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V4"/><path d="M18 8a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2"/></svg>`;
+                }
+
+                return `
+                    <div class="card-item" onclick="showDetail(${index})">
+                        <div class="card-top">
+                            <span class="card-name">${record.beanName || '未命名'}</span>
+                            <span class="roast-badge" data-roast="${record.roast || '中浅'}">${record.roast || '中浅'}</span>
+                        </div>
+                        <div class="card-meta">
+                            <span class="method-icon">${methodIcon}</span>
+                            <span>${record.method || '手冲'}</span>
+                            <span class="divider">·</span>
+                            <span>
+                                <svg class="icon icon-sm" viewBox="0 0 24 24" style="width:0.55rem;height:0.55rem;"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
+                                ${record.dateTime || ''}
+                            </span>
+                        </div>
+                        <div class="card-params">
+                            <span>研磨 <span class="param-val">${record.grind || 5}</span></span>
+                            <span>粉 <span class="param-val">${record.dose || 15}</span></span>
+                            <span>水温 <span class="param-val">${record.temp || 92}°</span></span>
+                            <span>水粉 <span class="param-val">${record.ratio || '1:15'}</span></span>
+                        </div>
+                        <div class="card-flavors">
+                            ${flavorsHtml}
+                            ${extraFlavors}
+                        </div>
+                        <div class="card-date">${record.dateTime || ''}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ================================================================
+        //  删除记录 (通用)
+        // ================================================================
+        function deleteRecord(index) {
+            const record = brewRecords[index];
+            if (!record) return;
+            showCustomModal(
+                '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg> 确认删除',
+                `确定要删除「${record.beanName || '未命名'}」的记录吗？此操作不可撤销。`,
+                null,
+                false,
+                '取消',
+                true,
+                '删除',
+                function () {
+                    brewRecords.splice(index, 1);
+                    saveToStorage();
+                    renderCards();
+                    closeToast();
+                }
+            );
+        }
+
+        // ================================================================
+        //  卡片详情弹窗
+        // ================================================================
+        let toastTimer = null;
+
+        function showDetail(index) {
+            const record = brewRecords[index];
+            if (!record) return;
+            currentDetailIndex = index;
+            document.getElementById('toastTitle').innerHTML = `
+                <span>${record.beanName || '未命名'}</span>
+                <button class="toast-delete-btn" onclick="deleteCurrentDetail()">
+                    <svg class="icon" viewBox="0 0 24 24" style="width:0.9rem;height:0.9rem;stroke:currentColor;"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    删除
+                </button>
+            `;
+
+            let bodyHtml = `
+                <div style="display:flex;flex-wrap:wrap;gap:0.25rem 0.5rem;margin-bottom:0.3rem;">
+                    <span style="background:var(--tag-bg);padding:0.1rem 0.5rem;border-radius:0.3rem;font-size:0.7rem;">${record.roast || '中浅'}</span>
+                    <span style="background:var(--tag-bg);padding:0.1rem 0.5rem;border-radius:0.3rem;font-size:0.7rem;">${record.method || '手冲'}</span>
+                    ${record.filter ? `<span style="background:var(--tag-bg);padding:0.1rem 0.5rem;border-radius:0.3rem;font-size:0.7rem;">${record.filter}</span>` : ''}
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.2rem 0.5rem;font-size:0.75rem;">
+                    <span>产地：${record.origin || '未知'}</span>
+                    <span>研磨度：${record.grind || 5}</span>
+                    <span>粉量：${record.dose || 15}g</span>
+                    <span>水温：${record.temp || 92}°C</span>
+                    <span>粉水比：${record.ratio || '1:15'}</span>
+                    <span>总水量：${record.waterTotal || 225}ml</span>
+                    <span style="grid-column:span 2;">冲煮时长：${record.timeDisplay || '0:00'}</span>
+                    <span style="grid-column:span 2;color:var(--text-placeholder);font-size:0.7rem;">保存时间：${record.dateTime || ''}</span>
+                </div>
+            `;
+
+            if (record.pourSteps && record.pourSteps.length > 0) {
+                let pourHtml = `<div class="pour-detail-grid">`;
+                record.pourSteps.forEach((step, i) => {
+                    const startStr = String(step.startMin || 0) + ':' + String(step.startSec || 0).padStart(2,
+                        '0');
+                    const endStr = String(step.endMin || 0) + ':' + String(step.endSec || 0).padStart(2, '0');
+                    pourHtml += `
+                        <div class="pour-detail-row">
+                            <span class="pd-label">${step.title || '第' + (i + 1) + '段'}</span>
+                            <span class="pd-val">${step.amount || 0}ml  (${startStr} → ${endStr})</span>
+                        </div>
+                    `;
+                });
+                pourHtml += `</div>`;
+                bodyHtml += pourHtml;
+            }
+
+            if (record.flavors && record.flavors.length) {
+                bodyHtml +=
+                    `<div style="margin-top:0.3rem;display:flex;flex-wrap:wrap;gap:0.2rem;">${record.flavors.map(f => `<span style="background:#F5EDE3;padding:0.05rem 0.5rem;border-radius:0.6rem;font-size:0.65rem;border:0.0625rem solid var(--primary);color:var(--primary);">${f}</span>`).join('')}</div>`;
+            }
+
+            if (record.note) {
+                bodyHtml +=
+                    `<div style="margin-top:0.3rem;font-size:0.75rem;color:var(--text-secondary);border-top:0.0625rem solid var(--border);padding-top:0.3rem;">📝 ${record.note}</div>`;
+            }
+
+            document.getElementById('toastBody').innerHTML = bodyHtml;
+
+            const toast = document.getElementById('detailToast');
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 8000);
+        }
+
+        function closeToast() {
+            document.getElementById('detailToast').classList.remove('show');
+            clearTimeout(toastTimer);
+        }
+
+        function deleteCurrentDetail() {
+            if (currentDetailIndex < 0 || currentDetailIndex >= brewRecords.length) return;
+            const record = brewRecords[currentDetailIndex];
+            showCustomModal(
+                '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg> 确认删除',
+                `确定要删除「${record.beanName || '未命名'}」的记录吗？此操作不可撤销。`,
+                null,
+                false,
+                '取消',
+                true,
+                '删除',
+                function () {
+                    brewRecords.splice(currentDetailIndex, 1);
+                    saveToStorage();
+                    renderCards();
+                    closeToast();
+                    currentDetailIndex = -1;
+                }
+            );
+        }
+
+        // ================================================================
+        //  页面切换
+        // ================================================================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            const fab = document.getElementById('fabBtn');
+            if (pageId === 'pageHome') {
+                fab.style.display = 'flex';
+                renderCards();
+            } else {
+                fab.style.display = 'none';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goHome() {
+            if (timerRunning) pauseTimer();
+            showPage('pageHome');
+            renderCards();
+        }
+
+        function goRecord() {
+            showPage('pageRecord');
+            const now = new Date();
+            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            const w = weekDays[now.getDay()];
+            document.getElementById('recordDate').textContent = y + '/' + m + '/' + d + ' 周' + w;
+            resetTimer();
+            document.getElementById('noteArea').value = '';
+            // 重置计数显示
+            document.getElementById('noteCount').textContent = '0/100';
+            document.getElementById('noteCount').classList.remove('warning');
+            // 豆名和产地计数已在initCharCounters中绑定，自动更新
+        }
+
+        // ================================================================
+        //  主页日期
+        // ================================================================
+        (function updateHomeDate() {
+            const now = new Date();
+            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            const w = weekDays[now.getDay()];
+            document.getElementById('homeDateText').textContent = y + '/' + m + '/' + d + ' 周' + w;
+            const h = now.getHours();
+            let greet = '下午好';
+            if (h < 6) greet = '夜深了';
+            else if (h < 12) greet = '早上好';
+            else if (h < 14) greet = '中午好';
+            else if (h < 18) greet = '下午好';
+            else greet = '晚上好';
+            document.getElementById('greetingText').innerHTML =
+                '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ' +
+                greet;
+        })();
+
+        // ================================================================
+        //  录入页 - 参数调节
+        // ================================================================
+        const params = { grind: 5, dose: 15.0, temp: 92, ratio: 15 };
+
+        function stepValue(key, delta) {
+            if (key === 'dose') {
+                params.dose = Math.min(50, Math.max(5, Math.round((params.dose + delta) * 10) / 10));
+                document.getElementById('doseValue').textContent = params.dose.toFixed(1);
+            } else if (key === 'temp') {
+                params.temp = Math.min(100, Math.max(70, params.temp + delta));
+                document.getElementById('tempValue').innerHTML = params.temp + '<span>°C</span>';
+            } else if (key === 'ratio') {
+                params.ratio = Math.min(50, Math.max(1, params.ratio + delta));
+                document.getElementById('ratioValue').textContent = '1:' + params.ratio;
+            }
+            updateWaterTotal();
+        }
+
+        function openGrindModal() {
+            document.getElementById('grindInput').value = params.grind;
+            document.getElementById('grindModal').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('grindInput').focus();
+                document.getElementById('grindInput').select();
+            }, 150);
+        }
+
+        function closeGrindModal() {
+            document.getElementById('grindModal').classList.remove('active');
+        }
+
+        function confirmGrindModal() {
+            const input = document.getElementById('grindInput');
+            let val = parseInt(input.value);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > 70) val = 70;
+            params.grind = val;
+            document.getElementById('grindDisplay').textContent = val;
+            closeGrindModal();
+        }
+
+        document.getElementById('grindModal').addEventListener('click', function (e) {
+            if (e.target === this) closeGrindModal();
+        });
+        document.getElementById('grindInput').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') confirmGrindModal();
+            if (e.key === 'Escape') closeGrindModal();
+        });
+
+        function updateWaterTotal() {
+            const total = Math.round(params.dose * params.ratio);
+            const waterTotalEl = document.getElementById('waterTotal');
+            if (waterTotalEl) {
+                waterTotalEl.textContent = total;
+            }
+            const pourTotalEl = document.getElementById('pourTotal');
+            if (pourTotalEl) {
+                pourTotalEl.textContent = '总计 ' + total + 'ml';
+            }
+            updatePourSummary();
+        }
+
+        // ================================================================
+        //  录入页 - 冲煮方式
+        // ================================================================
+        function selectMethod(el) {
+            document.querySelectorAll('.method-item').forEach(function (item) {
+                item.classList.remove('active');
+            });
+            el.classList.add('active');
+            const method = el.getAttribute('data-method');
+            const filterCard = document.getElementById('filterCard');
+            const pourCard = document.getElementById('pourCard');
+            if (method === 'hand-drip') {
+                filterCard.classList.remove('hidden');
+            } else {
+                filterCard.classList.add('hidden');
+            }
+            if (method === 'hand-drip' || method === 'french-press') {
+                pourCard.classList.remove('hidden');
+            } else {
+                pourCard.classList.add('hidden');
+            }
+            updateWaterTotal();
+        }
+
+        // ================================================================
+        //  录入页 - 滤杯 / 烘焙度
+        // ================================================================
+        function selectChip(el) {
+            document.querySelectorAll('#filterChips .chip').forEach(function (chip) {
+                chip.classList.remove('active');
+            });
+            el.classList.add('active');
+        }
+
+        function selectRoast(el) {
+            document.querySelectorAll('#roastChips .roast-chip').forEach(function (chip) {
+                chip.classList.remove('active');
+            });
+            el.classList.add('active');
+        }
+
+        // ================================================================
+        //  录入页 - 计时器
+        // ================================================================
+        var timerRunning = false;
+        var timerSeconds = 0;
+        var timerInterval = null;
+
+        function toggleTimer() {
+            if (timerRunning) { pauseTimer(); } else { startTimer(); }
+        }
+
+        function startTimer() {
+            timerRunning = true;
+            document.getElementById('timerStatus').style.display = 'inline-flex';
+            document.getElementById('playIcon').innerHTML =
+                '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+            timerInterval = setInterval(function () {
+                timerSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            timerRunning = false;
+            document.getElementById('timerStatus').style.display = 'none';
+            document.getElementById('playIcon').innerHTML = '<polygon points="5 3 19 12 5 21"/>';
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timerSeconds = 0;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            var m = Math.floor(timerSeconds / 60);
+            var s = timerSeconds % 60;
+            document.getElementById('timerDisplay').innerHTML =
+                m + '<span class="colon">:</span>' + String(s).padStart(2, '0');
+        }
+
+        // ================================================================
+        //  ★ 点击小旗子：将当前计时时间加入注水段
+        // ================================================================
+        function recordLap() {
+            if (timerSeconds === 0) {
+                showCustomModal(
+                    '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8"/></svg> 提示',
+                    '请先开始计时再标记注水段',
+                    null,
+                    false,
+                    '知道了'
+                );
+                return;
+            }
+            openAddModal(timerSeconds);
+        }
+
+        // ================================================================
+        //  录入页 - 风味标签
+        // ================================================================
+        function toggleFlavor(el) {
+            if (el.classList.contains('active')) {
+                el.classList.remove('active');
+                return;
+            }
+            const activeFlavors = document.querySelectorAll('#flavorTags .flavor-tag.active');
+            if (activeFlavors.length >= 3) {
+                showCustomModal(
+                    '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8"/></svg> 提示',
+                    '最多只能选择3个风味标签',
+                    null,
+                    false,
+                    '知道了'
+                );
+                return;
+            }
+            el.classList.add('active');
+        }
+
+        // ================================================================
+        //  录入页 - 注水段管理 (增强版)
+        // ================================================================
+        let pourSteps = [{ title: '闷蒸', startMin: 0, startSec: 0, endMin: 0, endSec: 30, amount: 30 }];
+        let editingIndex = -1;
+
+        function renderPourSteps() {
+            var container = document.getElementById('pourSteps');
+            container.innerHTML = '';
+            pourSteps.forEach(function (step, index) {
+                var div = document.createElement('div');
+                div.className = 'pour-step';
+                var startStr = step.startMin + ':' + String(step.startSec).padStart(2, '0');
+                var endStr = step.endMin + ':' + String(step.endSec).padStart(2, '0');
+                div.innerHTML = `
+                    <span class="step-dot"></span>
+                    <div class="step-info">
+                        <div class="step-title">${step.title}</div>
+                        <div class="step-detail">${startStr} → ${endStr}</div>
+                    </div>
+                    <div class="step-amount">${step.amount}<span>ml</span></div>
+                    <div class="step-actions">
+                        <button class="edit-btn" onclick="openEditModal(${index})"><svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+                        <button class="delete-btn" onclick="deleteStep(${index})"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            updatePourSummary();
+        }
+
+        function updatePourSummary() {
+            const totalWater = Math.round(params.dose * params.ratio);
+            const sum = pourSteps.reduce((acc, s) => acc + (s.amount || 0), 0);
+            const el = document.getElementById('pourSumValue');
+            const hint = document.getElementById('pourSumHint');
+            el.innerHTML = sum + '<span class="unit"> ml</span>';
+            if (sum === totalWater) {
+                el.className = 'sum-value match';
+                hint.textContent = '✅ 与总水量匹配';
+            } else {
+                el.className = 'sum-value mismatch';
+                const diff = Math.abs(sum - totalWater);
+                hint.textContent = sum > totalWater ? `⚠️ 超出 ${diff}ml` : `⚠️ 缺少 ${diff}ml`;
+            }
+        }
+
+        function openAddModal(startTimeSeconds) {
+            editingIndex = -1;
+            document.getElementById('modalTitle').innerHTML =
+                '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> 添加注水段';
+            document.getElementById('modalAmount').value = '';
+
+            if (startTimeSeconds !== undefined && startTimeSeconds !== null && startTimeSeconds > 0) {
+                var startMin = Math.floor(startTimeSeconds / 60);
+                var startSec = startTimeSeconds % 60;
+                document.getElementById('modalStartMin').value = startMin;
+                document.getElementById('modalStartSec').value = startSec;
+                var endSeconds = startTimeSeconds + 30;
+                var endMin = Math.floor(endSeconds / 60);
+                var endSec = endSeconds % 60;
+                document.getElementById('modalEndMin').value = endMin;
+                document.getElementById('modalEndSec').value = endSec;
+            } else {
+                document.getElementById('modalStartMin').value = 0;
+                document.getElementById('modalStartSec').value = 0;
+                document.getElementById('modalEndMin').value = 0;
+                document.getElementById('modalEndSec').value = 0;
+            }
+
+            document.getElementById('pourModal').classList.add('active');
+        }
+
+        function openEditModal(index) {
+            editingIndex = index;
+            var step = pourSteps[index];
+            document.getElementById('modalTitle').innerHTML =
+                '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg> 编辑注水段';
+            document.getElementById('modalAmount').value = step.amount;
+            document.getElementById('modalStartMin').value = step.startMin;
+            document.getElementById('modalStartSec').value = step.startSec;
+            document.getElementById('modalEndMin').value = step.endMin;
+            document.getElementById('modalEndSec').value = step.endSec;
+            document.getElementById('pourModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('pourModal').classList.remove('active');
+        }
+
+        function confirmModal() {
+            var amount = parseInt(document.getElementById('modalAmount').value) || 0;
+            var startMin = parseInt(document.getElementById('modalStartMin').value) || 0;
+            var startSec = parseInt(document.getElementById('modalStartSec').value) || 0;
+            var endMin = parseInt(document.getElementById('modalEndMin').value) || 0;
+            var endSec = parseInt(document.getElementById('modalEndSec').value) || 0;
+            if (startSec > 59) startSec = 59;
+            if (endSec > 59) endSec = 59;
+            if (startMin < 0) startMin = 0;
+            if (endMin < 0) endMin = 0;
+            var stepData = { amount, startMin, startSec, endMin, endSec };
+            if (editingIndex === -1) {
+                var existingTitles = pourSteps.map(function (s) { return s.title; });
+                var newTitle = '第一段';
+                var count = 1;
+                while (existingTitles.includes(newTitle)) {
+                    count++;
+                    newTitle = '第' + count + '段';
+                }
+                stepData.title = newTitle;
+                pourSteps.push(stepData);
+            } else {
+                stepData.title = pourSteps[editingIndex].title;
+                pourSteps[editingIndex] = stepData;
+            }
+            renderPourSteps();
+            closeModal();
+        }
+
+        function deleteStep(index) {
+            if (pourSteps.length <= 1) {
+                showCustomModal(
+                    '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8"/></svg> 提示',
+                    '至少保留一个注水段',
+                    null,
+                    false,
+                    '知道了'
+                );
+                return;
+            }
+            showCustomModal(
+                '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg> 确认删除',
+                `确定要删除「${pourSteps[index].title}」吗？`,
+                null,
+                false,
+                '取消',
+                true,
+                '删除',
+                function () {
+                    pourSteps.splice(index, 1);
+                    renderPourSteps();
+                }
+            );
+        }
+
+        // ================================================================
+        //  录入页 - 保存记录 (含字符验证)
+        // ================================================================
+        function saveRecord() {
+            const beanNameRaw = document.getElementById('beanName').value;
+            const beanOriginRaw = document.getElementById('beanOrigin').value;
+            const noteRaw = document.getElementById('noteArea').value;
+
+            // —— 字符限制验证（双重保障） ——
+            if (beanNameRaw.length > 20) {
+                showCustomModal(
+                    '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8"/></svg> 提示',
+                    '豆名不能超过20个字符',
+                    null,
+                    false,
+                    '知道了'
+                );
+                return;
+            }
+            if (beanOriginRaw.length > 20) {
+                showCustomModal(
+                    '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8"/></svg> 提示',
+                    '产地不能超过20个字符',
+                    null,
+                    false,
+                    '知道了'
+                );
+                return;
+            }
+            if (noteRaw.length > 100) {
+                showCustomModal(
+                    '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8"/></svg> 提示',
+                    '笔记不能超过100个字符',
+                    null,
+                    false,
+                    '知道了'
+                );
+                return;
+            }
+
+            const beanName = beanNameRaw.trim() || '未命名';
+            const beanOrigin = beanOriginRaw.trim() || '未知产地';
+
+            const roastEl = document.querySelector('#roastChips .roast-chip.active');
+            const roast = roastEl ? roastEl.getAttribute('data-roast') : '中浅';
+            const methodEl = document.querySelector('.method-item.active');
+            const method = methodEl ? methodEl.querySelector('.method-name').textContent : '手冲';
+            const filterEl = document.querySelector('#filterChips .chip.active');
+            const filter = filterEl ? filterEl.textContent : '';
+            const flavors = Array.from(document.querySelectorAll('#flavorTags .flavor-tag.active')).map(function (t) {
+                return t.textContent;
+            });
+            const note = noteRaw.trim();
+
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            const h = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            const dateTime = y + '/' + m + '/' + d + ' ' + h + ':' + min;
+
+            const waterTotal = Math.round(params.dose * params.ratio);
+
+            const newRecord = {
+                id: Date.now(),
+                beanName,
+                origin: beanOrigin,
+                roast,
+                method,
+                filter,
+                grind: params.grind,
+                dose: params.dose,
+                temp: params.temp,
+                ratio: '1:' + params.ratio,
+                waterTotal: waterTotal,
+                timeDisplay: document.getElementById('timerDisplay').textContent,
+                timeSeconds: timerSeconds,
+                flavors: flavors,
+                note: note,
+                dateTime: dateTime,
+                pourSteps: JSON.parse(JSON.stringify(pourSteps)),
+            };
+
+            brewRecords.unshift(newRecord);
+            saveToStorage();
+
+            const summaryHtml = `
+                <div class="record-summary">
+                    <div style="font-weight:600;color:var(--primary);margin-bottom:0.5rem;">✅ 冲煮记录已保存！</div>
+                    <div class="row"><span class="label">豆名</span><span class="highlight">${beanName}</span></div>
+                    <div class="row"><span class="label">产地</span><span>${beanOrigin}</span></div>
+                    <div class="row"><span class="label">烘焙度</span><span>${roast}</span></div>
+                    <div class="row"><span class="label">方式</span><span>${method}</span></div>
+                    <div class="row"><span class="label">研磨度</span><span class="highlight">${params.grind}</span></div>
+                    <div class="row"><span class="label">粉量</span><span class="highlight">${params.dose}g</span></div>
+                    <div class="row"><span class="label">水温</span><span class="highlight">${params.temp}°C</span></div>
+                    <div class="row"><span class="label">粉水比</span><span class="highlight">1:${params.ratio}</span></div>
+                    <div class="row"><span class="label">总水量</span><span class="highlight">${waterTotal}ml</span></div>
+                    <div class="row"><span class="label">时长</span><span class="highlight">${document.getElementById('timerDisplay').textContent}</span></div>
+                    <div class="row"><span class="label">保存时间</span><span class="highlight">${dateTime}</span></div>
+                    ${flavors.length ? `<div class="row"><span class="label">风味</span><span>${flavors.join('、')}</span></div>` : ''}
+                    ${note ? `<div class="row" style="flex-direction:column;align-items:flex-start;gap:0.2rem;"><span class="label">笔记</span><span style="color:var(--text-secondary);font-size:0.8rem;">${note}</span></div>` : ''}
+                    ${pourSteps.length ? `<div class="row" style="flex-direction:column;align-items:flex-start;gap:0.2rem;"><span class="label">注水段</span><span style="color:var(--text-secondary);font-size:0.75rem;">${pourSteps.map(s => s.title + ' ' + s.amount + 'ml').join(' → ')}</span></div>` : ''}
+                </div>
+            `;
+
+            showCustomModal(
+                '<svg class="icon" viewBox="0 0 24 24" style="width:1.2rem;height:1.2rem;stroke:currentColor;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 保存成功',
+                summaryHtml,
+                function () {
+                    goHome();
+                },
+                true,
+                '返回主页'
+            );
+        }
+
+        // ================================================================
+        //  初始化
+        // ================================================================
+        initData();
+
+        (function initMethod() {
+            const firstMethod = document.querySelector('.method-item');
+            if (firstMethod) selectMethod(firstMethod);
+            document.getElementById('grindDisplay').textContent = params.grind;
+            document.getElementById('doseValue').textContent = params.dose.toFixed(1);
+            document.getElementById('ratioValue').textContent = '1:' + params.ratio;
+            document.getElementById('tempValue').innerHTML = params.temp + '<span>°C</span>';
+            updateWaterTotal();
+            renderPourSteps();
+        })();
+
+        document.getElementById('pourModal').addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+
+</body>
+
+</html>

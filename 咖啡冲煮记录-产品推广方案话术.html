@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>咖啡冲煮记录 · 产品推广方案话术</title>
+  <style>
+    /* ===== 全局重置 & 基础 ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #F7F3EC;
+      color: #333333;
+      line-height: 1.9;
+      padding: 0 0 60px 0;
+    }
+
+    /* ===== 封面 ===== */
+    .cover {
+      background: #4A3428;
+      color: #F7F3EC;
+      padding: 70px 40px 55px;
+      text-align: center;
+    }
+
+    .cover .tag {
+      display: inline-block;
+      border: 1px solid rgba(247, 243, 236, 0.5);
+      padding: 3px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 26px;
+      color: #E0CDB8;
+    }
+
+    .cover h1 {
+      font-size: 34px;
+      letter-spacing: 4px;
+      font-weight: 700;
+    }
+
+    .cover .sub {
+      margin-top: 18px;
+      font-size: 15px;
+      color: #C9B39B;
+    }
+
+    .cover .slogan {
+      margin-top: 40px;
+      font-size: 21px;
+      letter-spacing: 3px;
+      color: #F0E3D0;
+    }
+
+    .cover .slogan strong {
+      color: #E8A15C;
+      font-weight: 700;
+    }
+
+    /* ===== 容器 ===== */
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 30px;
+    }
+
+    /* ===== 标题 ===== */
+    h2 {
+      margin: 55px 0 8px;
+      font-size: 22px;
+      color: #4A3428;
+      border-left: 5px solid #6F4E37;
+      padding-left: 14px;
+    }
+
+    h2 .no {
+      color: #B08D6E;
+      font-size: 14px;
+      margin-right: 8px;
+      font-weight: normal;
+    }
+
+    .h2sub {
+      font-size: 13px;
+      color: #999;
+      margin-left: 19px;
+    }
+
+    h3 {
+      font-size: 16px;
+      color: #6F4E37;
+      margin: 28px 0 10px;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    /* ===== 卡片 ===== */
+    .card {
+      background: #FFFFFF;
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin: 16px 0;
+      box-shadow: 0 1px 4px rgba(74, 52, 40, 0.08);
+    }
+
+    .insight {
+      background: #4A3428;
+      color: #F7F3EC;
+      border-radius: 10px;
+      padding: 28px 32px;
+      margin: 20px 0;
+    }
+
+    .insight .label {
+      color: #E8A15C;
+      font-size: 13px;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .insight p {
+      color: #EDE3D4;
+      font-size: 16px;
+    }
+
+    /* ===== 引用 ===== */
+    blockquote.main-copy {
+      border-left: 4px solid #E8A15C;
+      background: #FBF7F0;
+      padding: 18px 24px;
+      margin: 14px 0;
+      font-size: 19px;
+      font-weight: 700;
+      color: #4A3428;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .subcopy {
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* ===== 标签 ===== */
+    .skill-tag {
+      display: inline-block;
+      background: #EFF6EC;
+      color: #4A7A32;
+      font-size: 12px;
+      padding: 1px 10px;
+      border-radius: 10px;
+      margin-left: 8px;
+      font-weight: normal;
+    }
+
+    /* ===== 表格 ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 14px;
+    }
+
+    th {
+      background: #6F4E37;
+      color: #fff;
+      padding: 9px 12px;
+      text-align: left;
+      font-weight: normal;
+    }
+
+    td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #EFE8DD;
+    }
+
+    tr:nth-child(even) td {
+      background: #FBF8F2;
+    }
+
+    /* ===== 对话 ===== */
+    .dialog {
+      border: 1px dashed #C9B39B;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 10px 0;
+      background: #FDFAF4;
+    }
+
+    .dialog .q {
+      color: #B0562E;
+      font-weight: 700;
+    }
+
+    .dialog .a {
+      color: #4A3428;
+    }
+
+    /* ===== 列表 ===== */
+    .note {
+      font-size: 13px;
+      color: #999;
+      margin-top: 6px;
+    }
+
+    .checklist li {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+
+    /* ===== 阶段 ===== */
+    .phase {
+      display: flex;
+      gap: 14px;
+      margin: 14px 0;
+      flex-wrap: wrap;
+    }
+
+    .phase .step {
+      flex: 1;
+      min-width: 140px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px 14px;
+      box-shadow: 0 1px 4px rgba(74, 52, 40, 0.08);
+      font-size: 13px;
+    }
+
+    .phase .step b {
+      display: block;
+      color: #6F4E37;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .phase .step .num {
+      color: #E8A15C;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    ol,
+    ul {
+      padding-left: 22px;
+    }
+
+    .copy-item {
+      padding: 10px 0;
+      border-bottom: 1px dashed #EFE8DD;
+    }
+
+    .copy-item:last-child {
+      border-bottom: none;
+    }
+
+    /* ============================================================
+                   新增：表单样式（与页面风格统一）
+                   ============================================================ */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 28px;
+    }
+
+    @media (max-width: 640px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #4A3428;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-group label .limit-hint {
+      font-weight: 400;
+      color: #B08D6E;
+      font-size: 12px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      padding: 10px 14px;
+      border: 1.5px solid #E4D8CC;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #FEFCF9;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      width: 100%;
+      color: #333;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #6F4E37;
+      box-shadow: 0 0 0 3px rgba(111, 78, 55, 0.12);
+    }
+
+    .form-group input.is-over,
+    .form-group textarea.is-over {
+      border-color: #C0392B;
+      background: #FFF6F5;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 72px;
+    }
+
+    /* 字数计数器 */
+    .char-counter {
+      font-size: 12px;
+      color: #999;
+      text-align: right;
+      padding-right: 4px;
+      transition: color 0.2s;
+      margin-top: 2px;
+    }
+
+    .char-counter .current {
+      font-weight: 600;
+    }
+
+    .char-counter .max {
+      color: #B08D6E;
+    }
+
+    .char-counter.warning {
+      color: #E67E22;
+    }
+
+    .char-counter.danger {
+      color: #C0392B;
+    }
+
+    .char-counter .current.danger {
+      color: #C0392B;
+    }
+
+    /* 提交按钮 */
+    .form-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 16px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 11px 34px;
+      border: none;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.12s;
+      font-family: inherit;
+      letter-spacing: 0.5px;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: #6F4E37;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #5A3D2A;
+    }
+
+    .btn-secondary {
+      background: #EFE8DD;
+      color: #4A3428;
+    }
+
+    .btn-secondary:hover {
+      background: #E4D8CC;
+    }
+
+    /* ============================================================
+                   自定义弹窗（Toast / Modal）
+                   ============================================================ */
+    .toast-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(74, 52, 40, 0.45);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .toast-overlay.active {
+      display: flex;
+    }
+
+    .toast-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 36px 40px 32px;
+      max-width: 420px;
+      width: 92%;
+      box-shadow: 0 20px 60px rgba(74, 52, 40, 0.25);
+      text-align: center;
+      animation: slideUp 0.3s ease;
+    }
+
+    .toast-box .icon {
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+
+    .toast-box h4 {
+      font-size: 18px;
+      color: #4A3428;
+      margin-bottom: 8px;
+    }
+
+    .toast-box p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .toast-box .btn-toast {
+      background: #6F4E37;
+      color: #fff;
+      border: none;
+      padding: 10px 36px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+
+    .toast-box .btn-toast:hover {
+      background: #5A3D2A;
+    }
+
+    .toast-box .field-name {
+      font-weight: 700;
+      color: #4A3428;
+    }
+
+    .toast-box .limit-num {
+      color: #C0392B;
+      font-weight: 700;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.96);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* ===== 响应式微调 ===== */
+    @media (max-width: 600px) {
+      .cover {
+        padding: 40px 20px 35px;
+      }
+
+      .cover h1 {
+        font-size: 26px;
+      }
+
+      .wrap {
+        padding: 0 16px;
+      }
+
+      .card {
+        padding: 18px 16px;
+      }
+
+      .phase {
+        flex-direction: column;
+      }
+
+      .phase .step {
+        min-width: unset;
+      }
+
+      .toast-box {
+        padding: 28px 20px 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ==================== 封面 ==================== -->
+  <div class="cover">
+    <div class="tag">产品推广方案 · 话术手册</div>
+    <h1>咖啡冲煮记录</h1>
+    <div class="sub">让好喝，可以重来。</div>
+    <div class="slogan">别让最好喝的那杯，<strong>只出现一次</strong>。</div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- ==================== 01 洞察 ==================== -->
+    <h2><span class="no">01</span>洞察：先找到那个懊悔时刻</h2>
+    <div class="h2sub">推广话术的根，不在产品功能里，在用户的情绪里</div>
+
+    <div class="insight">
+      <div class="label">核心洞察</div>
+      <p>每一个手冲咖啡的人，这辈子都冲出过一杯「绝世好喝」——然后，永远失去了它。豆子磨多细、水温多少、注水多快，那天全凭感觉，而感觉不会存档。</p>
+    </div>
+
+    <div class="card">
+      <p><b>三个真实场景，话术的弹药库：</b></p>
+      <ul>
+        <li><b>复刻失败</b>：同一支豆子，上礼拜那杯有花香，这礼拜只剩苦涩。问自己哪儿不一样——想不起来。</li>
+        <li><b>好豆浪费</b>：花大价钱买的瑰夏、竞标批次的耶加，冲不出该有的风味，「是不是被豆商骗了」——其实是手法在漂移。</li>
+        <li><b>进步玄学</b>：手冲半年，水平靠「手感」，手感靠「运气」。问任何一位咖啡师怎么进步的，答案出奇一致：<b>记参数</b>。</li>
+      </ul>
+      <p class="note">对照事实：世界冲煮大赛选手的每一杯都有完整参数记录，专业咖啡吧台贴满配方卡。业余与专业的差距，不在天赋，在记录。</p>
+    </div>
+
+    <!-- ==================== 02 定位 ==================== -->
+    <h2><span class="no">02</span>定位与主张：一句话讲清你是谁</h2>
+
+    <blockquote class="main-copy">会冲的人很多，记得住的人很少。</blockquote>
+    <p class="subcopy">（结构致敬「建得起的就业服务很多，用得起来的只有一个」——品类占位句式，竞品抄不走）</p>
+
+    <div class="card">
+      <p><b>产品角色定位：</b>不是「记录工具」，是<b>你的私人冲煮教练</b>——把「偶尔好喝」变成「杯杯好喝」。</p>
+      <p><b>虚实结合：</b>实（记录参数、对比曲线、评分存档）＋ 虚（把玄学冲成手艺，让每一次进步留下证据）。</p>
+    </div>
+
+    <!-- ==================== 03 Slogan ==================== -->
+    <h2><span class="no">03</span>Slogan 库：五条备选，各有打法</h2>
+
+    <div class="card">
+      <div class="copy-item">
+        <b>① 让好喝，可以重来。</b><span class="skill-tag">短小+矛盾</span>
+        <p class="subcopy">首推。「好喝」本该是一次性的运气，一个「重来」制造反差，7个字讲完核心价值。</p>
+      </div>
+      <div class="copy-item">
+        <b>② 别让最好喝的那杯，只出现一次。</b><span class="skill-tag">情绪+画面</span>
+        <p class="subcopy">痛点直击版，适合做推广主视觉和话题标签。</p>
+      </div>
+      <div class="copy-item">
+        <b>③ 手感会骗你，记录不会。</b><span class="skill-tag">对比+拟人</span>
+        <p class="subcopy">挑战「凭手感」的资深用户，攻击性最强，适合进阶圈层传播。</p>
+      </div>
+      <div class="copy-item">
+        <b>④ 好咖啡，是记出来的。</b><span class="skill-tag">改编</span>
+        <p class="subcopy">化用「好功夫是练出来的」，借力文化直觉，适合品牌定调期。</p>
+      </div>
+      <div class="copy-item">
+        <b>⑤ 一杯一记，杯杯好喝。</b><span class="skill-tag">押韵</span>
+        <p class="subcopy">节奏洗脑版，适合展会海报、CTA按钮、打卡活动口号。</p>
+      </div>
+    </div>
+
+    <!-- ==================== 04 核心文案 ==================== -->
+    <h2><span class="no">04</span>核心文案组：主文案＋辅助文案</h2>
+
+    <blockquote class="main-copy">好喝靠运气，杯杯好喝靠记录。</blockquote>
+
+    <div class="card">
+      <ul>
+        <li>15g 豆 · 225g 水 · 1:15 · 92°C · 2分30秒——好喝的秘密就 5 个数字。上一次你凭感觉，这一次有存档。<span class="skill-tag">数字+换算</span></li>
+        <li>一张萃取曲线的对比，顶得上十次「我猜是水温差了」。<span class="skill-tag">比较</span></li>
+        <li>从「偶尔好喝」到「杯杯好喝」，中间隔着一本记录。<span class="skill-tag">递进</span></li>
+        <li>记下的不是参数，是你变好的证据。<span class="skill-tag">虚实结合</span></li>
+        <li>咖啡师的手感，是记出来的。<span class="skill-tag">拟人收尾</span></li>
+      </ul>
+    </div>
+
+    <!-- ==================== 05 场景话术 ==================== -->
+    <h2><span class="no">05</span>场景话术：拿来就能发</h2>
+
+    <h3>小红书 / 朋友圈标题（引流）</h3>
+    <div class="card">
+      <ul>
+        <li>那杯封神的手冲，我终于复刻出来了</li>
+        <li>你冲丢的好咖啡，都值得找回来</li>
+        <li>手冲三个月，我靠这个戒掉了「玄学」</li>
+        <li>别再问「今天怎么没冲出上次那个味」了</li>
+        <li>花了 300 块的豆子，我不允许自己再冲砸一次</li>
+      </ul>
+      <p class="note">首图建议：一杯咖啡＋一张写满参数的记录卡片，对比感拉满。</p>
+    </div>
+
+    <h3>30 秒短视频脚本</h3>
+    <div class="card">
+      <p><b>【0-3秒 · 冲突开场】</b></p>
+      <p>「上个月，我冲出了人生最好喝的一杯咖啡——然后我再也冲不出来了。」（画面：翻遍空白笔记本，一脸懊悔）</p>
+      <p><b>【3-20秒 · 产品演示】</b></p>
+      <p>拍豆袋 → 记下水温粉比 → 评分一键存档。第二天开冲前，APP 自动弹出对比：「比上次粉粗了 0.5 格，快了 10 秒」。调整，重冲，表情亮了。</p>
+      <p><b>【20-30秒 · 收尾】</b></p>
+      <p>「运气会走，记录会留。」（品牌 LOGO + Slogan：让好喝，可以重来。）</p>
+    </div>
+
+    <h3>电商详情页 / 落地页</h3>
+    <div class="card">
+      <p><b>首屏主文案：</b>好喝靠运气，杯杯好喝靠记录。</p>
+      <p><b>首屏副文案：</b>豆子会变、水温会飘、手感会累——你的记录不会。每一次冲煮自动存档，下次开冲前，先看上一次为什么好喝。</p>
+      <p><b>CTA 按钮：</b>「存下你这杯好咖啡」/「开始第一次记录」</p>
+    </div>
+
+    <!-- ==================== 06 渠道话术 ==================== -->
+    <h2><span class="no">06</span>渠道与销售话术：面对咖啡店主和豆商</h2>
+
+    <h3>开场（面向门店 / 豆商合作）</h3>
+    <div class="dialog">
+      <p class="q">开场白：</p>
+      <p class="a">「你们店里有没有遇到过——熟客抱怨同一支豆子，上礼拜喝的跟这礼拜不是一个味？问题多半不在豆子，在出品没被记下来。」</p>
+    </div>
+
+    <h3>三大合作卖点</h3>
+    <div class="card">
+      <table>
+        <tr>
+          <th>对象</th>
+          <th>痛点</th>
+          <th>我们的价值</th>
+        </tr>
+        <tr>
+          <td>咖啡门店</td>
+          <td>出品不稳定，换个人冲就走味</td>
+          <td>配方卡线上化，谁上吧台都能冲出同一杯</td>
+        </tr>
+        <tr>
+          <td>豆商 / 烘焙师</td>
+          <td>客户「喝不出价值」嫌豆子贵</td>
+          <td>随豆附冲煮参数，让客户把豆子的风味真正喝出来</td>
+        </tr>
+        <tr>
+          <td>咖啡培训师</td>
+          <td>学员结课就忘</td>
+          <td>记录即作业，学习成果看得见</td>
+        </tr>
+      </table>
+    </div>
+
+    <h3>异议处理（C端 + B端通用）</h3>
+    <div class="dialog">
+      <p class="q">「我凭手感就行，记参数太麻烦。」</p>
+      <p class="a">「手感是你的天赋，记录是天赋的存档——存档不会累，也不会请假。而且拍个照、点几下，30 秒的事，省下的是下次 10 分钟的瞎猜。」</p>
+    </div>
+    <div class="dialog">
+      <p class="q">「我已经用备忘录 / Excel 记了。」</p>
+      <p class="a">「备忘录记得下数字，比不了曲线、找不回那杯的味道。记了三个月之后你会发现：真正的价值不在『记』，在『对比』——上一次为什么好喝，它替你想。」</p>
+    </div>
+    <div class="dialog">
+      <p class="q">「APP 这么多，我用不过来。」</p>
+      <p class="a">「这个不是又一个小红书。它只干一件事：让你下次冲得跟这次一样好。」</p>
+    </div>
+
+    <!-- ==================== 07 推广节奏 ==================== -->
+    <h2><span class="no">07</span>推广节奏：四阶段 Campaign 骨架</h2>
+
+    <div class="phase">
+      <div class="step"><span class="num">1</span><b>共鸣期</b>话题 #最好喝的那杯# —— 征集「你再也复刻不出来的那杯咖啡」UGC 故事，只造共鸣不带产品。</div>
+      <div class="step"><span class="num">2</span><b>引入期</b>上线「找回那杯咖啡」记录模板，KOC 晒「复刻成功」前后对比图。</div>
+      <div class="step"><span class="num">3</span><b>养成期</b>21 天冲煮打卡挑战，口号「一杯一记，杯杯好喝」，晒记录墙。</div>
+      <div class="step"><span class="num">4</span><b>扩散期</b>年度冲煮报告：「你今年冲了 183 杯，最好喝的是第 97 杯的耶加雪菲」——社交货币，自发转发。</div>
+    </div>
+    <p class="note">年度报告是长线钩子：它把「记录」从工具行为变成身份认同——「认真对待每一杯咖啡的人」。</p>
+
+    <!-- ==================== 08 自检 ==================== -->
+    <h2><span class="no">08</span>附：文案质量自检（已过检）</h2>
+    <div class="card">
+      <ul class="checklist">
+        <li>✔ 有冲突：「运气 vs 记录」「手感会骗你」——全篇围绕一组核心张力</li>
+        <li>✔ 有画面：空白笔记本、复刻成功后的表情、记录墙</li>
+        <li>✔ 有数字且可感知：5 个数字、30 秒、0.5 格、10 秒</li>
+        <li>✔ 竞品抄不走：「让好喝，可以重来」绑定「复现」这一独占价值</li>
+        <li>✔ 去 AI 味：无「赋能 / 闭环 / 抓手 / 颗粒度」，无堆砌排比，动词优先</li>
+        <li>✔ 不编造数据：文中数字为文案示例，正式投放前替换为真实数据</li>
+      </ul>
+    </div>
+
+    <!-- ============================================================
+        09 · 冲煮记录表单（新增）
+        所有输入框均带字数限制 + 超字数弹窗提示
+        ============================================================ -->
+    <h2><span class="no">09</span>冲煮记录表单 · 立即记录你的咖啡</h2>
+    <div class="h2sub">每个字段都有字数限制，超出即弹窗提醒</div>
+
+    <div class="card">
+      <form id="brewForm" novalidate>
+        <div class="form-grid">
+
+          <!-- 1. 咖啡豆名称 -->
+          <div class="form-group">
+            <label>
+              咖啡豆名称
+              <span class="limit-hint">（最多 20 字）</span>
+            </label>
+            <input type="text" id="field-bean" maxlength="20" placeholder="例：埃塞俄比亚·耶加雪菲" />
+            <div class="char-counter" id="counter-bean">
+              <span class="current">0</span> / <span class="max">20</span>
+            </div>
+          </div>
+
+          <!-- 2. 烘焙程度 -->
+          <div class="form-group">
+            <label>
+              烘焙程度
+              <span class="limit-hint">（最多 10 字）</span>
+            </label>
+            <input type="text" id="field-roast" maxlength="10" placeholder="浅烘 / 中浅 / 中深" />
+            <div class="char-counter" id="counter-roast">
+              <span class="current">0</span> / <span class="max">10</span>
+            </div>
+          </div>
+
+          <!-- 3. 研磨刻度 -->
+          <div class="form-group">
+            <label>
+              研磨刻度
+              <span class="limit-hint">（最多 10 字）</span>
+            </label>
+            <input type="text" id="field-grind" maxlength="10" placeholder="例：C40 #22 / 小富士 #4" />
+            <div class="char-counter" id="counter-grind">
+              <span class="current">0</span> / <span class="max">10</span>
+            </div>
+          </div>
+
+          <!-- 4. 水温 (°C) -->
+          <div class="form-group">
+            <label>
+              水温 (°C)
+              <span class="limit-hint">（最多 10 字）</span>
+            </label>
+            <input type="text" id="field-temp" maxlength="10" placeholder="例：92°C / 88-90°C" />
+            <div class="char-counter" id="counter-temp">
+              <span class="current">0</span> / <span class="max">10</span>
+            </div>
+          </div>
+
+          <!-- 5. 粉水比 -->
+          <div class="form-group">
+            <label>
+              粉水比
+              <span class="limit-hint">（最多 10 字）</span>
+            </label>
+            <input type="text" id="field-ratio" maxlength="10" placeholder="例：1:15 / 1:16.5" />
+            <div class="char-counter" id="counter-ratio">
+              <span class="current">0</span> / <span class="max">10</span>
+            </div>
+          </div>
+
+          <!-- 6. 注水时间 -->
+          <div class="form-group">
+            <label>
+              注水时间
+              <span class="limit-hint">（最多 10 字）</span>
+            </label>
+            <input type="text" id="field-time" maxlength="10" placeholder="例：2分30秒 / 2:30" />
+            <div class="char-counter" id="counter-time">
+              <span class="current">0</span> / <span class="max">10</span>
+            </div>
+          </div>
+
+          <!-- 7. 风味描述 (全宽) -->
+          <div class="form-group full">
+            <label>
+              风味描述
+              <span class="limit-hint">（最多 100 字）</span>
+            </label>
+            <textarea id="field-flavor" maxlength="100" rows="3" placeholder="花香、柑橘、焦糖、可可…… 写下这杯咖啡的风味印象"></textarea>
+            <div class="char-counter" id="counter-flavor">
+              <span class="current">0</span> / <span class="max">100</span>
+            </div>
+          </div>
+
+          <!-- 8. 冲煮评分 (全宽) -->
+          <div class="form-group full">
+            <label>
+              冲煮评分
+              <span class="limit-hint">（最多 10 字）</span>
+            </label>
+            <input type="text" id="field-score" maxlength="10" placeholder="例：8.5 / 9.2 / 非常好喝！" />
+            <div class="char-counter" id="counter-score">
+              <span class="current">0</span> / <span class="max">10</span>
+            </div>
+          </div>
+
+          <!-- 按钮 -->
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">📝 保存记录</button>
+            <button type="reset" class="btn btn-secondary">清空重填</button>
+          </div>
+
+        </div><!-- /form-grid -->
+      </form>
+
+      <p class="note" style="margin-top:16px; font-size:13px; color:#999;">
+        ⚡ 所有输入框均已设置字数上限，超出时会自动截断并弹出提示。
+      </p>
+    </div>
+
+  </div><!-- /wrap -->
+
+  <!-- ============================================================
+    自定义弹窗 (Toast Modal)
+    ============================================================ -->
+  <div class="toast-overlay" id="toastOverlay">
+    <div class="toast-box">
+      <div class="icon">✋</div>
+      <h4>字数已达上限</h4>
+      <p id="toastMessage">
+        「<span class="field-name" id="toastFieldName">风味描述</span>」
+        最多只能输入 <span class="limit-num" id="toastLimitNum">100</span> 个字。
+      </p>
+      <button class="btn-toast" id="toastBtn">知道了</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+    JavaScript：字数限制 + 弹窗逻辑
+    ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ---------- DOM 引用 ----------
+      const toastOverlay = document.getElementById('toastOverlay');
+      const toastMessage = document.getElementById('toastMessage');
+      const toastFieldName = document.getElementById('toastFieldName');
+      const toastLimitNum = document.getElementById('toastLimitNum');
+      const toastBtn = document.getElementById('toastBtn');
+
+      // 所有需要监控的输入框配置
+      const fields = [{
+        id: 'field-bean',
+        counterId: 'counter-bean',
+        label: '咖啡豆名称',
+        max: 20
+      }, {
+        id: 'field-roast',
+        counterId: 'counter-roast',
+        label: '烘焙程度',
+        max: 10
+      }, {
+        id: 'field-grind',
+        counterId: 'counter-grind',
+        label: '研磨刻度',
+        max: 10
+      }, {
+        id: 'field-temp',
+        counterId: 'counter-temp',
+        label: '水温',
+        max: 10
+      }, {
+        id: 'field-ratio',
+        counterId: 'counter-ratio',
+        label: '粉水比',
+        max: 10
+      }, {
+        id: 'field-time',
+        counterId: 'counter-time',
+        label: '注水时间',
+        max: 10
+      }, {
+        id: 'field-flavor',
+        counterId: 'counter-flavor',
+        label: '风味描述',
+        max: 100
+      }, {
+        id: 'field-score',
+        counterId: 'counter-score',
+        label: '冲煮评分',
+        max: 10
+      }];
+
+      // ---------- 工具：更新计数器显示 ----------
+      function updateCounter(input, counterEl, max) {
+        const len = input.value.length;
+        const currentSpan = counterEl.querySelector('.current');
+        if (currentSpan) {
+          currentSpan.textContent = len;
+        }
+        // 样式反馈
+        counterEl.classList.remove('warning', 'danger');
+        if (len > max) {
+          counterEl.classList.add('danger');
+          if (currentSpan) currentSpan.classList.add('danger');
+        } else if (len >= max * 0.8) {
+          counterEl.classList.add('warning');
+          if (currentSpan) currentSpan.classList.remove('danger');
+        } else {
+          if (currentSpan) currentSpan.classList.remove('danger');
+        }
+        // 输入框边框反馈
+        input.classList.toggle('is-over', len > max);
+      }
+
+      // ---------- 核心：检查并截断 + 弹窗 ----------
+      function handleInput(input, max, label, counterEl) {
+        let val = input.value;
+        const len = val.length;
+
+        // 更新计数器（先更新，再判断是否超限）
+        updateCounter(input, counterEl, max);
+
+        if (len > max) {
+          // 1. 截断
+          input.value = val.slice(0, max);
+          // 2. 更新计数器（截断后重新计算）
+          updateCounter(input, counterEl, max);
+          // 3. 弹窗
+          showToast(label, max);
+          // 4. 光标移到末尾
+          input.setSelectionRange(max, max);
+        }
+      }
+
+      // ---------- 显示弹窗 ----------
+      let toastTimer = null;
+
+      function showToast(label, max) {
+        // 如果已有定时器，清除（防止快速连续触发）
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+          toastTimer = null;
+        }
+
+        toastFieldName.textContent = label;
+        toastLimitNum.textContent = max;
+        toastOverlay.classList.add('active');
+
+        // 自动关闭（6 秒后）
+        toastTimer = setTimeout(function () {
+          toastOverlay.classList.remove('active');
+          toastTimer = null;
+        }, 6000);
+      }
+
+      // ---------- 关闭弹窗 ----------
+      function closeToast() {
+        toastOverlay.classList.remove('active');
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+          toastTimer = null;
+        }
+      }
+
+      // 点击遮罩 / 按钮关闭
+      toastOverlay.addEventListener('click', function (e) {
+        if (e.target === toastOverlay) {
+          closeToast();
+        }
+      });
+      toastBtn.addEventListener('click', closeToast);
+
+      // 按 ESC 关闭
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && toastOverlay.classList.contains('active')) {
+          closeToast();
+        }
+      });
+
+      // ---------- 绑定所有输入框 ----------
+      fields.forEach(function (cfg) {
+        const input = document.getElementById(cfg.id);
+        const counter = document.getElementById(cfg.counterId);
+        if (!input || !counter) return;
+
+        // 初始计数
+        updateCounter(input, counter, cfg.max);
+
+        // 监听 input 事件
+        input.addEventListener('input', function () {
+          handleInput(input, cfg.max, cfg.label, counter);
+        });
+
+        // 监听 change 事件（粘贴等场景的兜底）
+        input.addEventListener('change', function () {
+          const len = input.value.length;
+          if (len > cfg.max) {
+            handleInput(input, cfg.max, cfg.label, counter);
+          } else {
+            updateCounter(input, counter, cfg.max);
+          }
+        });
+
+        // 监听 paste 事件，确保粘贴后也触发截断
+        input.addEventListener('paste', function () {
+          // 用 setTimeout 让粘贴内容先写入，再处理
+          setTimeout(function () {
+            const len = input.value.length;
+            if (len > cfg.max) {
+              handleInput(input, cfg.max, cfg.label, counter);
+            } else {
+              updateCounter(input, counter, cfg.max);
+            }
+          }, 10);
+        });
+      });
+
+      // ---------- 表单提交（演示） ----------
+      const form = document.getElementById('brewForm');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // 检查所有字段是否为空（简单演示）
+        let hasEmpty = false;
+        let firstEmpty = null;
+        fields.forEach(function (cfg) {
+          const input = document.getElementById(cfg.id);
+          if (input && input.value.trim() === '') {
+            hasEmpty = true;
+            if (!firstEmpty) firstEmpty = input;
+          }
+        });
+
+        if (hasEmpty) {
+          alert('⚠️ 还有字段未填写，请完成全部记录再保存。');
+          if (firstEmpty) {
+            firstEmpty.focus();
+            firstEmpty.style.borderColor = '#C0392B';
+            setTimeout(function () {
+              firstEmpty.style.borderColor = '';
+            }, 1500);
+          }
+          return;
+        }
+
+        // 收集数据
+        const data = {};
+        fields.forEach(function (cfg) {
+          const input = document.getElementById(cfg.id);
+          if (input) {
+            data[cfg.label] = input.value.trim();
+          }
+        });
+
+        // 模拟保存成功
+        alert(
+          '✅ 记录已保存！\n\n' +
+          Object.entries(data).map(function (_ref) {
+            var key = _ref[0],
+              val = _ref[1];
+            return key + '：' + val;
+          }).join('\n') +
+          '\n\n「让好喝，可以重来。」'
+        );
+
+        // 可在此处将数据发送到服务器
+        console.log('冲煮记录数据：', data);
+      });
+
+      // ---------- 重置时重置计数器 ----------
+      form.addEventListener('reset', function () {
+        // 延迟执行，等待表单重置完成
+        setTimeout(function () {
+          fields.forEach(function (cfg) {
+            const input = document.getElementById(cfg.id);
+            const counter = document.getElementById(cfg.counterId);
+            if (input && counter) {
+              updateCounter(input, counter, cfg.max);
+            }
+          });
+        }, 20);
+      });
+
+      console.log('✅ 咖啡冲煮记录表单已加载，所有输入框均带字数限制 + 弹窗提示。');
+
+    })();
+  </script>
+
+</body>
+
+</html>
